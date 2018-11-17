@@ -1,6 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import Mushroom from '../sprites/Mushroom'
+import ColorBar from '../sprites/ColorBar'
 
 export default class extends Phaser.State {
   init () {}
@@ -16,19 +17,37 @@ export default class extends Phaser.State {
     banner.smoothed = false
     banner.anchor.setTo(0.5)
 
-    this.mushroom = new Mushroom({
-      game: this,
-      x: this.world.centerX,
-      y: this.world.centerY,
-      asset: 'mushroom'
+    this.redBar = new ColorBar({
+      game: this.game,
+      x: 150,
+      y: this.world.height - 100,
+      color: 'r'
+    })
+    this.blueBar = new ColorBar({
+      game: this.game,
+      x: this.world.width * 1 / 4 + 150,
+      y: this.world.height - 100,
+      color: 'b'
+    })
+    this.greenBar = new ColorBar({
+      game: this.game,
+      x: this.world.width * 2 / 4 + 150,
+      y: this.world.height - 100,
+      color: 'g'
     })
 
-    this.game.add.existing(this.mushroom)
+    this.game.add.existing(this.redBar)
+    this.game.add.existing(this.greenBar)
+    this.game.add.existing(this.blueBar)
+
+    // set up keys
+    self.rKey = this.game.input.keyboard.addKey(Phaser.KeyCode.R)
+    self.rKey.onDown.add(this.redBar.step, this.redBar)
   }
 
   render () {
     if (__DEV__) {
-      this.game.debug.spriteInfo(this.mushroom, 32, 32)
+      this.game.debug.inputInfo(32, 32)
     }
   }
 }
