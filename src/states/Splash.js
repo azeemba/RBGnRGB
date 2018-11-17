@@ -14,10 +14,11 @@ export default class extends Phaser.State {
     // load your assets
     //
     this.load.image('mushroom', 'assets/images/mushroom2.png')
+    this.load.image('preview', 'assets/images/preview.png')
     let colors = ['redbar', 'bluebar', 'greenbar']
     for (let c of colors) {
       this.load.spritesheet(c, `assets/images/${c}sheet.png`,
-          160, 560, 5, 0)
+          560, 160, 5, 0)
     }
   }
 
