@@ -1,14 +1,11 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import ColorBar from '../sprites/ColorBar'
+import Hero from '../sprites/Hero'
 
 export default class extends Phaser.State {
   init () {}
-  preload () {
-  
-    this.game.load.image('bullet', 'assets/images/bullet.png');
-    this.game.load.image('ship', 'assets/images/ship.png');
-}
+  preload () {}
 
   create () {
     this.redBar = new ColorBar({
@@ -38,32 +35,35 @@ export default class extends Phaser.State {
     )
     this.preview.width = 100
     this.preview.height = 100
+
+    this.hero = new Hero({
+      game: this.game,
+      x: 350,
+      y: 300
+    })
+
     this.game.add.existing(this.preview)
+    this.game.add.existing(this.hero)
 
-
-//    this.sprite = this.game.add.sprite(350, 250, 'ship');
-
-
-    this.sprite = new Phaser.Sprite(
-	this.game,
-	350,
-	250,
-	'ship'
-    )
-    this.game.add.existing(this.sprite);
 
     game.physics.startSystem(Phaser.Physics.P2JS)
-
-   game.physics.enable(this.sprite, Phaser.Physics.P2JS)
+    game.physics.enable(this.hero, Phaser.Physics.P2JS)
 
 
     this.weapon = this.game.add.weapon(30, 'bullet');
+    this.weapon.height = 5
+    this.weapon.width = 5
     this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     this.weapon.bulletSpeed = 400;
     this.weapon.bulletAngleOffset = 90;
-    this.weapon.trackSprite(this.sprite, 14, 0);
+    this.weapon.trackSprite(this.hero, 14, 0);
     this.fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
    
+    let playerScale = .15;
+    this.hero.scale.setTo(playerScale, playerScale);
+
+    this.weapon.bullets.setAll('scale.x', playerScale/5)
+    this.weapon.bullets.setAll('scale.y', playerScale/5)
     this.cursors = this.input.keyboard.createCursorKeys();
 
     this.game.add.existing(this.redBar)
@@ -85,15 +85,15 @@ export default class extends Phaser.State {
   }
 
   update () {
-   //this.sprite.body.velocity.x = 0;
+   this.hero.body.velocity.x = 0;
 
     if (this.cursors.left.isDown)
     {
-       this.sprite.body.velocity.x = -200;
+       this.hero.body.velocity.x = -200;
     }
     else if (this.cursors.right.isDown)
     {
-        this.sprite.body.velocity.x = 200;
+        this.hero.body.velocity.x = 200;
     }
 
     if (this.fireButton.isDown)

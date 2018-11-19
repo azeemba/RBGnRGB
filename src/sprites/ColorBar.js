@@ -21,7 +21,8 @@ let LEGEND_COLOR = {
 export default class extends Phaser.Sprite {
   constructor ({ game, x, y, color }) {
     let spriteName = COLOR_NAME_MAP[color]
-    super(game, x, y, spriteName, 4)
+    let START_FRAME = 4
+    super(game, x, y, spriteName, START_FRAME)
     this.anchor.setTo(0.5)
     this.width = 140
     this.height = 40
