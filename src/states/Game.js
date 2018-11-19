@@ -1,6 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import ColorBar from '../sprites/ColorBar'
+import Hero from '../sprites/Hero'
 
 export default class extends Phaser.State {
   init () {}
@@ -34,7 +35,16 @@ export default class extends Phaser.State {
     )
     this.preview.width = 100
     this.preview.height = 100
+
+    this.hero = new Hero({
+      game: this.game,
+      x: 100,
+      y: 100
+    })
+
     this.game.add.existing(this.preview)
+
+    this.game.add.existing(this.hero)
 
     this.game.add.existing(this.redBar)
     this.game.add.existing(this.greenBar)
