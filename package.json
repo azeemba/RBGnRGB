@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "webpack",
     "deploy": "webpack --config webpack.production.config.js",
-    "test": "eslint ./src/**/**.js"
+    "test": "eslint ./src/**/**.js",
+    "fix": "eslint --fix ./src/**/**.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
