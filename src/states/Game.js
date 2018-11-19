@@ -54,9 +54,11 @@ export default class extends Phaser.State {
     this.weapon.height = 5
     this.weapon.width = 5
     this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-    this.weapon.bulletSpeed = 400;
+    this.weapon.fireRate = 250 // milliseconds
+    this.weapon.bulletSpeed = 300;
     this.weapon.bulletAngleOffset = 90;
     this.weapon.trackSprite(this.hero, 14, 0);
+    this.weapon.onFire.add(this.onWeaponFire, this)
     this.fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
    
     let playerScale = .15;
@@ -76,12 +78,22 @@ export default class extends Phaser.State {
       this.game.debug.inputInfo(32, 32)
     }
 
+    let color = this.calculateColor()
+    this.preview.tint = color
+  }
+
+  calculateColor () {
     let color = Phaser.Color.getColor(
       255 * this.redBar.data.level / 4,
       255 * this.greenBar.data.level / 4,
       255 * this.blueBar.data.level / 4
     )
-    this.preview.tint = color
+    return color
+  }
+
+  onWeaponFire (bullet, weapon) {
+    let color = this.calculateColor()
+    bullet.tint = color
   }
 
   update () {
