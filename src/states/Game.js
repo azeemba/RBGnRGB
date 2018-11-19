@@ -1,6 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import ColorBar from '../sprites/ColorBar'
+import Hero from '../sprites/Hero'
 
 export default class extends Phaser.State {
   init () {}
@@ -34,7 +35,36 @@ export default class extends Phaser.State {
     )
     this.preview.width = 100
     this.preview.height = 100
+
+    this.hero = new Hero({
+      game: this.game,
+      x: 350,
+      y: 300
+    })
+
     this.game.add.existing(this.preview)
+    this.game.add.existing(this.hero)
+
+
+    game.physics.startSystem(Phaser.Physics.P2JS)
+    game.physics.enable(this.hero, Phaser.Physics.P2JS)
+
+
+    this.weapon = this.game.add.weapon(30, 'bullet');
+    this.weapon.height = 5
+    this.weapon.width = 5
+    this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    this.weapon.bulletSpeed = 400;
+    this.weapon.bulletAngleOffset = 90;
+    this.weapon.trackSprite(this.hero, 14, 0);
+    this.fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+   
+    let playerScale = .15;
+    this.hero.scale.setTo(playerScale, playerScale);
+
+    this.weapon.bullets.setAll('scale.x', playerScale/5)
+    this.weapon.bullets.setAll('scale.y', playerScale/5)
+    this.cursors = this.input.keyboard.createCursorKeys();
 
     this.game.add.existing(this.redBar)
     this.game.add.existing(this.greenBar)
@@ -53,4 +83,25 @@ export default class extends Phaser.State {
     )
     this.preview.tint = color
   }
+
+  update () {
+   this.hero.body.velocity.x = 0;
+
+    if (this.cursors.left.isDown)
+    {
+       this.hero.body.velocity.x = -200;
+    }
+    else if (this.cursors.right.isDown)
+    {
+        this.hero.body.velocity.x = 200;
+    }
+
+    if (this.fireButton.isDown)
+    {
+        this.weapon.fire();
+    } 
+  }
+
+
+
 }
