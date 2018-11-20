@@ -136,10 +136,15 @@ export default class extends Phaser.State {
 
 }
 
-hitEnemy (player, enemies) {
-        enemies.kill();
+hitEnemy (bullet, enemy) {
+  console.log("bullet color:", bullet.tint)
+  console.log("enemy color:", enemy.tint)
+    if (enemy.tint == bullet.tint) {
+        enemy.kill();
         console.log("Hit");
     }
+        
+}
 
 
 }
