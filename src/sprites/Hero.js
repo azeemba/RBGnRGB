@@ -13,6 +13,9 @@ export default class extends Phaser.Sprite {
     this.animations.add(IDLE)
     this.animations.play(IDLE, 15, true)
     this.data.mode = IDLE
+
+    game.physics.arcade.enable(this)
+    this.body.collideWorldBounds = true;
   }
 
   walkLeft (weapon) {

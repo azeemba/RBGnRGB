@@ -9,6 +9,9 @@ export default class extends Phaser.State {
   preload () {}
 
   create () {
+    this.game.physics.startSystem(Phaser.Physics.ARCADE)
+    this.cursors = this.input.keyboard.createCursorKeys()
+
     this.redBar = new ColorBar({
       game: this.game,
       x: 100,
@@ -28,6 +31,11 @@ export default class extends Phaser.State {
       color: 'b'
     })
 
+    this.game.add.existing(this.redBar)
+    this.game.add.existing(this.greenBar)
+    this.game.add.existing(this.blueBar)
+
+    //preview
     this.preview = new Phaser.Sprite(
       this.game,
       this.world.width - 150,
@@ -37,18 +45,20 @@ export default class extends Phaser.State {
     this.preview.width = 100
     this.preview.height = 100
 
+    this.game.add.existing(this.preview)
+
+    //hero
     this.hero = new Hero({
       game: this.game,
       x: 350,
       y: 300
     })
 
-    this.game.add.existing(this.preview)
+    let playerScale = 0.15
+    this.hero.scale.setTo(playerScale, playerScale)
     this.game.add.existing(this.hero)
 
-    this.game.physics.startSystem(Phaser.Physics.ARCADE)
-    this.game.physics.enable(this.hero, Phaser.Physics.ARCADE)
-
+    //bullets
     this.weapon = this.game.add.weapon(30, 'bullet')
     this.weapon.bullets.enableBody = true;
     this.weapon.bullets.physicsBodyType = Phaser.Physics.ARCADE
@@ -61,18 +71,10 @@ export default class extends Phaser.State {
     this.weapon.trackSprite(this.hero, 14, 0)
     this.weapon.onFire.add(this.onWeaponFire, this)
     this.fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
-
-    let playerScale = 0.15
-    this.hero.scale.setTo(playerScale, playerScale)
+   
 
     this.weapon.bullets.setAll('scale.x', playerScale / 5)
     this.weapon.bullets.setAll('scale.y', playerScale / 5)
-    this.cursors = this.input.keyboard.createCursorKeys()
-
-    this.game.add.existing(this.redBar)
-    this.game.add.existing(this.greenBar)
-    this.game.add.existing(this.blueBar)
-
 
     //enemies
     this.enemies = this.game.add.group();
