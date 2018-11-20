@@ -48,7 +48,6 @@ export default class extends Phaser.State {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
     this.game.physics.enable(this.hero, Phaser.Physics.ARCADE)
-    //this.game.physics.p2.setImpactEvents(true)
 
     this.weapon = this.game.add.weapon(30, 'bullet')
     this.weapon.bullets.enableBody = true;
@@ -86,15 +85,6 @@ export default class extends Phaser.State {
 
     this.enemies.setAll('outOfBoundsKill', true)
     this.enemies.setAll('checkWorldBounds', true)
-
-//    this.enemies.createMultiple(10, 'enemy')
-//    this.enemies.setAll('anchor.x', 0.5)
-//    this.enemies.setAll('anchor.y', 0.5)
-//    this.enemies.setAll('scale.x', 0.5)
-//    this.enemies.setAll('scale.y', 0.5)
-//    this.enemies.setAll('angle', 180)
-        
-
   
   }
 
