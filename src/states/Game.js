@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 import ColorBar from '../sprites/ColorBar'
 import Hero from '../sprites/Hero'
+import Enemy from '../sprites/Enemy'
 
 export default class extends Phaser.State {
   init () {}
@@ -45,10 +46,13 @@ export default class extends Phaser.State {
     this.game.add.existing(this.preview)
     this.game.add.existing(this.hero)
 
-    this.game.physics.startSystem(Phaser.Physics.P2JS)
-    this.game.physics.enable(this.hero, Phaser.Physics.P2JS)
+    this.game.physics.startSystem(Phaser.Physics.ARCADE)
+    this.game.physics.enable(this.hero, Phaser.Physics.ARCADE)
+    //this.game.physics.p2.setImpactEvents(true)
 
     this.weapon = this.game.add.weapon(30, 'bullet')
+    this.weapon.bullets.enableBody = true;
+    this.weapon.bullets.physicsBodyType = Phaser.Physics.ARCADE
     this.weapon.height = 5
     this.weapon.width = 5
     this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS
@@ -69,6 +73,29 @@ export default class extends Phaser.State {
     this.game.add.existing(this.redBar)
     this.game.add.existing(this.greenBar)
     this.game.add.existing(this.blueBar)
+
+
+    //enemies
+    this.enemies = this.game.add.group();
+    this.enemies.enableBody = true
+    this.enemies.physicsBodyType = Phaser.Physics.ARCADE;
+
+    for (let i = 0; i < 10; i++) {
+      this.enemies.add(new Enemy({game: this.game, x: 50 + (i * 70), y: 50}))
+    }
+
+    this.enemies.setAll('outOfBoundsKill', true)
+    this.enemies.setAll('checkWorldBounds', true)
+
+//    this.enemies.createMultiple(10, 'enemy')
+//    this.enemies.setAll('anchor.x', 0.5)
+//    this.enemies.setAll('anchor.y', 0.5)
+//    this.enemies.setAll('scale.x', 0.5)
+//    this.enemies.setAll('scale.y', 0.5)
+//    this.enemies.setAll('angle', 180)
+        
+
+  
   }
 
   render () {
@@ -107,5 +134,15 @@ export default class extends Phaser.State {
     if (this.fireButton.isDown) {
       this.weapon.fire()
     }
-  }
+  
+   this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
+
+}
+
+hitEnemy (player, enemies) {
+        enemies.kill();
+        console.log("Hit");
+    }
+
+
 }
