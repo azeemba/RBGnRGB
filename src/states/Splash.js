@@ -23,8 +23,10 @@ export default class extends Phaser.State {
           560, 160, 5, 0)
     }
 
-    this.load.spritesheet('hero', 'assets/images/hero/idle_blink_anim.png',
+    this.load.spritesheet('idle', 'assets/images/hero/idle_blink_anim.png',
       265, 282)
+    this.load.spritesheet('walk', 'assets/images/hero/walking_anim.png',
+      265, 290)
   }
 
   create () {

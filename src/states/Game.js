@@ -126,9 +126,14 @@ export default class extends Phaser.State {
 
     if (this.cursors.left.isDown) {
       this.hero.body.velocity.x = -200
+      this.hero.walkLeft(this.weapon)
     }
     else if (this.cursors.right.isDown) {
       this.hero.body.velocity.x = 200
+      this.hero.walkRight(this.weapon)
+    }
+    else {
+      this.hero.idle()
     }
 
     if (this.fireButton.isDown) {
