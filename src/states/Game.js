@@ -50,11 +50,11 @@ export default class extends Phaser.State {
     // hero
     this.hero = new Hero({
       game: this.game,
-      x: 350,
-      y: 300
+      x: 400,
+      y: 700
     })
 
-    let playerScale = 0.15
+    let playerScale = 0.30
     this.hero.scale.setTo(playerScale, playerScale)
     this.game.add.existing(this.hero)
 
@@ -72,8 +72,8 @@ export default class extends Phaser.State {
     this.weapon.onFire.add(this.onWeaponFire, this)
     this.fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
 
-    this.weapon.bullets.setAll('scale.x', playerScale / 5)
-    this.weapon.bullets.setAll('scale.y', playerScale / 5)
+    this.weapon.bullets.setAll('scale.x', playerScale / 6)
+    this.weapon.bullets.setAll('scale.y', playerScale / 6)
 
     // enemies
     this.enemies = this.game.add.group();

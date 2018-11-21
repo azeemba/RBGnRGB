@@ -24,7 +24,7 @@ export default class extends Phaser.Sprite {
       this.data.mode = 'left'
 
       this.scale.x = Math.abs(this.scale.x) * -1
-      weapon.trackSprite(this, -14, 0)
+      weapon.trackSprite(this, -28, 0)
     }
   }
 
@@ -33,7 +33,7 @@ export default class extends Phaser.Sprite {
       this.changeAnimation(WALK, 20)
       this.data.mode = 'right'
 
-      weapon.trackSprite(this, 14, 0)
+      weapon.trackSprite(this, 28, 0)
       this.scale.x = Math.abs(this.scale.x)
     }
   }
