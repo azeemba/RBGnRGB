@@ -108889,8 +108889,8 @@ const config_1 = __webpack_require__(122);
 class Game extends Phaser.Game {
     constructor() {
         const docElement = document.documentElement;
-        const width = docElement.clientWidth > config_1.default.gameWidth ? config_1.default.gameWidth : docElement.clientWidth;
-        const height = docElement.clientHeight > config_1.default.gameHeight ? config_1.default.gameHeight : docElement.clientHeight;
+        const width = config_1.default.gameWidth;
+        const height = config_1.default.gameHeight;
         super(width, height, Phaser.CANVAS, 'content', null);
         this.state.add('Boot', Boot_1.default, false);
         this.state.add('Splash', Splash_1.default, false);
@@ -108912,8 +108912,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  gameWidth: 760,
-  gameHeight: 400,
+  gameWidth: 1024,
+  gameHeight: 800,
   localStorageName: 'phaseres6webpack'
 };
 
@@ -109133,7 +109133,7 @@ var _class = function (_Phaser$Sprite) {
         this.data.mode = 'left';
 
         this.scale.x = Math.abs(this.scale.x) * -1;
-        weapon.trackSprite(this, -14, 0);
+        weapon.trackSprite(this, -28, 0);
       }
     }
   }, {
@@ -109143,7 +109143,7 @@ var _class = function (_Phaser$Sprite) {
         this.changeAnimation(WALK, 20);
         this.data.mode = 'right';
 
-        weapon.trackSprite(this, 14, 0);
+        weapon.trackSprite(this, 28, 0);
         this.scale.x = Math.abs(this.scale.x);
       }
     }
@@ -109218,6 +109218,9 @@ var _class = function (_Phaser$State) {
   }, {
     key: 'preload',
     value: function preload() {
+      this.game.scale.scaleMode = _phaser2.default.ScaleManager.SHOW_ALL;
+      this.game.scale.pageAlignHorizontally = true;
+      this.game.scale.pageAlignVertically = true;
       _webfontloader2.default.load({
         google: {
           families: ['Bangers', 'Fredoka One']
@@ -109332,25 +109335,25 @@ var _class = function (_Phaser$State) {
       this.game.add.existing(this.greenBar);
       this.game.add.existing(this.blueBar);
 
-      //preview
+      // preview
       this.preview = new _phaser2.default.Sprite(this.game, this.world.width - 150, this.world.height - 100, 'preview');
       this.preview.width = 100;
       this.preview.height = 100;
 
       this.game.add.existing(this.preview);
 
-      //hero
+      // hero
       this.hero = new _Hero2.default({
         game: this.game,
-        x: 350,
-        y: 300
+        x: 400,
+        y: 700
       });
 
-      var playerScale = 0.15;
+      var playerScale = 0.30;
       this.hero.scale.setTo(playerScale, playerScale);
       this.game.add.existing(this.hero);
 
-      //bullets
+      // bullets
       this.weapon = this.game.add.weapon(30, 'bullet');
       this.weapon.bullets.enableBody = true;
       this.weapon.bullets.physicsBodyType = _phaser2.default.Physics.ARCADE;
@@ -109364,10 +109367,10 @@ var _class = function (_Phaser$State) {
       this.weapon.onFire.add(this.onWeaponFire, this);
       this.fireButton = this.input.keyboard.addKey(_phaser2.default.KeyCode.SPACEBAR);
 
-      this.weapon.bullets.setAll('scale.x', playerScale / 5);
-      this.weapon.bullets.setAll('scale.y', playerScale / 5);
+      this.weapon.bullets.setAll('scale.x', playerScale / 6);
+      this.weapon.bullets.setAll('scale.y', playerScale / 6);
 
-      //enemies
+      // enemies
       this.enemies = this.game.add.group();
       this.enemies.enableBody = true;
       this.enemies.physicsBodyType = _phaser2.default.Physics.ARCADE;
@@ -109425,11 +109428,11 @@ var _class = function (_Phaser$State) {
   }, {
     key: 'hitEnemy',
     value: function hitEnemy(bullet, enemy) {
-      console.log("bullet color:", bullet.tint);
-      console.log("enemy color:", enemy.tint);
-      if (enemy.tint == bullet.tint) {
+      console.log('bullet color:', bullet.tint);
+      console.log('enemy color:', enemy.tint);
+      if (enemy.tint === bullet.tint) {
         enemy.kill();
-        console.log("Hit");
+        console.log('Hit');
       }
     }
   }]);
