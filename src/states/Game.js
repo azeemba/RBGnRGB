@@ -81,7 +81,10 @@ export default class extends Phaser.State {
     this.enemies.physicsBodyType = Phaser.Physics.ARCADE;
 
     for (let i = 0; i < 10; i++) {
-      this.enemies.add(new Enemy({game: this.game, x: 50 + (i * 70), y: 50}))
+      this.enemies.add(new Enemy({
+        game: this.game, 
+        x:  this.world.width * i / 10 + 50, 
+        y: 50}))
     }
 
     this.enemies.setAll('outOfBoundsKill', true)
