@@ -54,8 +54,8 @@ export default class extends Phaser.State {
       y: 700
     })
 
-    let playerScale = 0.30
-    this.hero.scale.setTo(playerScale, playerScale)
+    this.playerScale = 0.30
+    this.hero.scale.setTo(this.playerScale, this.playerScale)
     this.game.add.existing(this.hero)
 
     // bullets
@@ -72,8 +72,8 @@ export default class extends Phaser.State {
     this.weapon.onFire.add(this.onWeaponFire, this)
     this.fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
 
-    this.weapon.bullets.setAll('scale.x', playerScale / 6)
-    this.weapon.bullets.setAll('scale.y', playerScale / 6)
+    this.weapon.bullets.setAll('scale.x', this.playerScale / 6)
+    this.weapon.bullets.setAll('scale.y', this.playerScale / 6)
 
     // enemies
     this.enemies = this.game.add.group();
@@ -85,11 +85,12 @@ export default class extends Phaser.State {
         game: this.game, 
         x:  this.world.width * i / 10 + 50, 
         y: 50,
-        scale: playerScale})
+        scale: this.playerScale})
       this.enemies.add(enemy)
       enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
     }
 
+    this.enemyMoveCount = 0
     this.enemies.setAll('checkWorldBounds', true)
   }
 
@@ -118,6 +119,7 @@ export default class extends Phaser.State {
 
   update () {
     this.hero.body.velocity.x = 0
+    this.enemyMoveCount++
 
     if (this.cursors.left.isDown) {
       this.hero.body.velocity.x = -200
@@ -139,6 +141,18 @@ export default class extends Phaser.State {
 
     for (let i = 0; i < this.enemies.length; ++i) {
       this.enemies.children[i].move()
+    }
+
+    let newEnemyDistance = parseInt((this.world.width * 1/10), 10)
+    if (this.enemyMoveCount == newEnemyDistance) {
+      let enemy = new Enemy({
+        game: this.game, 
+        x:  50, 
+        y: 50,
+        scale: this.playerScale})
+      this.enemies.add(enemy)
+      enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
+      this.enemyMoveCount = 0
     }
 
   }
