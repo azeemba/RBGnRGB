@@ -36,7 +36,6 @@ export default class extends Phaser.Sprite {
   	if (this.direction == "right") {
   		this.direction = "left"
   		this.x = this.x - 50
-  		console.log(this.x, this.y)
   	}
   	else if (this.direction == "left") {
   		this.direction = "right"

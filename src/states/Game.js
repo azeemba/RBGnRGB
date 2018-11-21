@@ -151,6 +151,7 @@ export default class extends Phaser.State {
         y: 50,
         scale: this.playerScale})
       this.enemies.add(enemy)
+      enemy.checkWorldBounds = true
       enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
       this.enemyMoveCount = 0
     }
