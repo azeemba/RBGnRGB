@@ -108948,16 +108948,16 @@ var COLOR_NAME_MAP = {
   'b': 'bluebar'
 };
 
-var KEY_MAP = {
-  'r': _phaser2.default.KeyCode.R,
-  'g': _phaser2.default.KeyCode.G,
-  'b': _phaser2.default.KeyCode.B
-};
-
 var LEGEND_COLOR = {
   'r': '#ed313a',
   'g': '#6cbd45',
   'b': '#2d9ad5'
+};
+
+var MAX_LEVELS_TO_FRAME = {
+  2: [4, 3],
+  3: [4, 1, 3],
+  5: [4, 0, 1, 2, 3]
 };
 
 var _class = function (_Phaser$Sprite) {
@@ -108967,7 +108967,8 @@ var _class = function (_Phaser$Sprite) {
     var game = _ref.game,
         x = _ref.x,
         y = _ref.y,
-        color = _ref.color;
+        color = _ref.color,
+        levels = _ref.levels;
 
     _classCallCheck(this, _class);
 
@@ -108981,15 +108982,11 @@ var _class = function (_Phaser$Sprite) {
     _this.height = 40;
 
     _this.data.level = 0;
+    _this.data.maxLevels = levels;
     _this.data.color = color; // should be r/g/b
 
     // Mouse click handling
     _this.inputEnabled = true;
-    _this.events.onInputDown.add(_this.step, _this);
-
-    // Keyboard handling
-    _this.data.key = _this.game.input.keyboard.addKey(KEY_MAP[color]);
-    _this.data.key.onDown.add(_this.step, _this);
 
     var text = _this.game.add.text(0, 100, _this.data.color.toUpperCase());
     text.anchor.setTo(0.5);
@@ -109003,13 +109000,15 @@ var _class = function (_Phaser$Sprite) {
   _createClass(_class, [{
     key: 'step',
     value: function step() {
-      this.data.level = (this.data.level + 1) % 5;
+      this.data.level = (this.data.level + 1) % this.data.maxLevels;
 
-      if (this.data.level === 0) {
-        this.frame = 4;
-      } else {
-        this.frame = this.data.level - 1;
-      }
+      this.frame = MAX_LEVELS_TO_FRAME[this.data.maxLevels][this.data.level];
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this.data.level = 0;
+      this.frame = 4;
     }
   }]);
 
@@ -109029,6 +109028,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _phaserCe = __webpack_require__(87);
 
 var _phaserCe2 = _interopRequireDefault(_phaserCe);
@@ -109041,31 +109042,85 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var ONE_COLOR_ARRAY = ['r', 'g', 'b'];
+
 var _class = function (_Phaser$Sprite) {
   _inherits(_class, _Phaser$Sprite);
 
   function _class(_ref) {
     var game = _ref.game,
         x = _ref.x,
-        y = _ref.y;
+        y = _ref.y,
+        scale = _ref.scale,
+        colors_allowed = _ref.colors_allowed,
+        color_levels = _ref.color_levels;
 
     _classCallCheck(this, _class);
 
     var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, game, x, y, 'enemy'));
 
     _this.anchor.setTo(0.5);
-    _this.width = 80;
-    _this.height = 80;
 
-    var redRand = game.rnd.integerInRange(0, 4);
-    var greenRand = game.rnd.integerInRange(0, 4);
-    var blueRand = game.rnd.integerInRange(0, 4);
+    _this.scale.setTo(scale * 1.5, scale * 1.5);
 
-    var color = _phaserCe2.default.Color.getColor(255 * redRand / 4, 255 * greenRand / 4, 255 * blueRand / 4);
+    var maxVal = color_levels - 1;
+    var redRand = 255 * game.rnd.integerInRange(0, maxVal) / maxVal;
+    var greenRand = 255 * game.rnd.integerInRange(0, maxVal) / maxVal;
+    var blueRand = 255 * game.rnd.integerInRange(0, maxVal) / maxVal;
+
+    var color = void 0;
+    if (colors_allowed === 1) {
+      var info = { r: 0, g: 0, b: 0 };
+      var winner = game.rnd.pick(ONE_COLOR_ARRAY);
+      info[winner] = redRand; // not really red
+      color = _this.makeColor(info);
+    } else if (colors_allowed === 2) {
+      var _info = { r: redRand, g: greenRand, b: blueRand };
+      var loser = game.rnd.pick(ONE_COLOR_ARRAY);
+      _info[loser] = 0;
+      color = _this.makeColor(_info);
+    } else {
+      color = _phaserCe2.default.Color.getColor(redRand, greenRand, blueRand);
+    }
+
     console.log(color);
     _this.tint = color;
+
+    _this.direction = "right";
     return _this;
   }
+
+  _createClass(_class, [{
+    key: 'makeColor',
+    value: function makeColor(_ref2) {
+      var r = _ref2.r,
+          g = _ref2.g,
+          b = _ref2.b;
+
+      return _phaserCe2.default.Color.getColor(r, g, b);
+    }
+  }, {
+    key: 'move',
+    value: function move() {
+      if (this.direction == "right") {
+        this.x = this.x + 1;
+      } else if (this.direction == "left") {
+        this.x = this.x - 1;
+      }
+    }
+  }, {
+    key: 'turn',
+    value: function turn() {
+      this.y = this.y + 70;
+      if (this.direction == "right") {
+        this.direction = "left";
+        this.x = this.x - 50;
+      } else if (this.direction == "left") {
+        this.direction = "right";
+        this.x = this.x + 50;
+      }
+    }
+  }]);
 
   return _class;
 }(_phaserCe2.default.Sprite);
@@ -109291,6 +109346,25 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals __DEV__ */
 
 
+var LEVEL_DATA = [{
+  'level': 0,
+  'colors_allowed': 1, // how many colors can be enabled together [1, 3]
+  'color_levels': 2, // how many levels each color should have [2, 3, 5]
+  enemyCount: 3
+}, {
+  'level': 1,
+  'colors_allowed': 2, // how many colors can be enabled together [1, 3]
+  'color_levels': 2, // how many levels each color should have [2, 3, 5]
+  // other enemy stats
+  enemyCount: 5
+}, {
+  'level': 2,
+  'colors_allowed': 3, // how many colors can be enabled together [1, 3]
+  'color_levels': 3, // how many levels each color should have [2, 3, 5]
+  // other enemy stats
+  enemyCount: -1
+}];
+
 var _class = function (_Phaser$State) {
   _inherits(_class, _Phaser$State);
 
@@ -109302,7 +109376,10 @@ var _class = function (_Phaser$State) {
 
   _createClass(_class, [{
     key: 'init',
-    value: function init() {}
+    value: function init(level) {
+      this.level = level;
+      this.levelData = LEVEL_DATA[level];
+    }
   }, {
     key: 'preload',
     value: function preload() {}
@@ -109311,36 +109388,10 @@ var _class = function (_Phaser$State) {
     value: function create() {
       this.game.physics.startSystem(_phaser2.default.Physics.ARCADE);
       this.cursors = this.input.keyboard.createCursorKeys();
-
-      this.redBar = new _ColorBar2.default({
-        game: this.game,
-        x: 100,
-        y: this.world.height - 50,
-        color: 'r'
+      this.colorBarManager = new ColorBarManager(this.game, this.world, {
+        'colors_allowed': this.levelData.colors_allowed,
+        'color_levels': this.levelData.color_levels
       });
-      this.greenBar = new _ColorBar2.default({
-        game: this.game,
-        x: this.world.width * 1 / 4 + 100,
-        y: this.world.height - 50,
-        color: 'g'
-      });
-      this.blueBar = new _ColorBar2.default({
-        game: this.game,
-        x: this.world.width * 2 / 4 + 100,
-        y: this.world.height - 50,
-        color: 'b'
-      });
-
-      this.game.add.existing(this.redBar);
-      this.game.add.existing(this.greenBar);
-      this.game.add.existing(this.blueBar);
-
-      // preview
-      this.preview = new _phaser2.default.Sprite(this.game, this.world.width - 150, this.world.height - 100, 'preview');
-      this.preview.width = 100;
-      this.preview.height = 100;
-
-      this.game.add.existing(this.preview);
 
       // hero
       this.hero = new _Hero2.default({
@@ -109349,8 +109400,8 @@ var _class = function (_Phaser$State) {
         y: 700
       });
 
-      var playerScale = 0.30;
-      this.hero.scale.setTo(playerScale, playerScale);
+      this.playerScale = 0.30;
+      this.hero.scale.setTo(this.playerScale, this.playerScale);
       this.game.add.existing(this.hero);
 
       // bullets
@@ -109367,8 +109418,8 @@ var _class = function (_Phaser$State) {
       this.weapon.onFire.add(this.onWeaponFire, this);
       this.fireButton = this.input.keyboard.addKey(_phaser2.default.KeyCode.SPACEBAR);
 
-      this.weapon.bullets.setAll('scale.x', playerScale / 6);
-      this.weapon.bullets.setAll('scale.y', playerScale / 6);
+      this.weapon.bullets.setAll('scale.x', this.playerScale / 6);
+      this.weapon.bullets.setAll('scale.y', this.playerScale / 6);
 
       // enemies
       this.enemies = this.game.add.group();
@@ -109376,10 +109427,19 @@ var _class = function (_Phaser$State) {
       this.enemies.physicsBodyType = _phaser2.default.Physics.ARCADE;
 
       for (var i = 0; i < 10; i++) {
-        this.enemies.add(new _Enemy2.default({ game: this.game, x: 50 + i * 70, y: 50 }));
+        var enemy = new _Enemy2.default({
+          game: this.game,
+          x: this.world.width * i / 10 + 50,
+          y: 50,
+          scale: this.playerScale,
+          colors_allowed: this.levelData.colors_allowed,
+          color_levels: this.levelData.color_levels
+        });
+        this.enemies.add(enemy);
+        enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
       }
 
-      this.enemies.setAll('outOfBoundsKill', true);
+      this.enemyMoveCount = 0;
       this.enemies.setAll('checkWorldBounds', true);
     }
   }, {
@@ -109388,15 +109448,11 @@ var _class = function (_Phaser$State) {
       if (false) {
         this.game.debug.inputInfo(32, 32);
       }
-
-      var color = this.calculateColor();
-      this.preview.tint = color;
     }
   }, {
     key: 'calculateColor',
     value: function calculateColor() {
-      var color = _phaser2.default.Color.getColor(255 * this.redBar.data.level / 4, 255 * this.greenBar.data.level / 4, 255 * this.blueBar.data.level / 4);
-      return color;
+      return this.colorBarManager.calculateColor();
     }
   }, {
     key: 'onWeaponFire',
@@ -109408,6 +109464,7 @@ var _class = function (_Phaser$State) {
     key: 'update',
     value: function update() {
       this.hero.body.velocity.x = 0;
+      this.enemyMoveCount++;
 
       if (this.cursors.left.isDown) {
         this.hero.body.velocity.x = -200;
@@ -109424,6 +109481,27 @@ var _class = function (_Phaser$State) {
       }
 
       this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
+
+      for (var i = 0; i < this.enemies.length; ++i) {
+        this.enemies.children[i].move();
+      }
+
+      if (this.levelData.enemyCount === -1) {
+        var newEnemyDistance = parseInt(this.world.width * 1 / 10, 10);
+        if (this.enemyMoveCount == newEnemyDistance) {
+          var enemy = new _Enemy2.default({
+            game: this.game,
+            x: 50,
+            y: 50,
+            scale: this.playerScale,
+            colors_allowed: this.levelData.colors_allowed,
+            color_levels: this.levelData.color_levels });
+          this.enemies.add(enemy);
+          enemy.checkWorldBounds = true;
+          enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
+          this.enemyMoveCount = 0;
+        }
+      }
     }
   }, {
     key: 'hitEnemy',
@@ -109434,6 +109512,18 @@ var _class = function (_Phaser$State) {
         enemy.kill();
         console.log('Hit');
       }
+
+      if (this.enemies.countLiving() === 0) {
+        var clearWorld = true;
+        var clearCache = false;
+        var level = this.level + 1;
+        this.state.restart(clearWorld, clearCache, level);
+      }
+    }
+  }, {
+    key: 'enemyOutOfBounds',
+    value: function enemyOutOfBounds(enemy) {
+      enemy.turn();
     }
   }]);
 
@@ -109441,6 +109531,107 @@ var _class = function (_Phaser$State) {
 }(_phaser2.default.State);
 
 exports.default = _class;
+
+
+var KEY_MAP = {
+  'r': _phaser2.default.KeyCode.R,
+  'g': _phaser2.default.KeyCode.G,
+  'b': _phaser2.default.KeyCode.B
+};
+
+var ColorBarManager = function () {
+  function ColorBarManager(game, world, _ref) {
+    var colors_allowed = _ref.colors_allowed,
+        color_levels = _ref.color_levels;
+
+    _classCallCheck(this, ColorBarManager);
+
+    this.game = game;
+    this.world = world;
+    this.colors_allowed = colors_allowed;
+    this.color_levels = color_levels;
+
+    this.redBar = new _ColorBar2.default({
+      game: this.game,
+      x: 100,
+      y: this.world.height - 50,
+      color: 'r',
+      levels: this.color_levels
+    });
+    this.greenBar = new _ColorBar2.default({
+      game: this.game,
+      x: this.world.width * 1 / 4 + 100,
+      y: this.world.height - 50,
+      color: 'g',
+      levels: this.color_levels
+    });
+    this.blueBar = new _ColorBar2.default({
+      game: this.game,
+      x: this.world.width * 2 / 4 + 100,
+      y: this.world.height - 50,
+      color: 'b',
+      levels: this.color_levels
+    });
+
+    this.addHandlers(this.redBar);
+    this.addHandlers(this.greenBar);
+    this.addHandlers(this.blueBar);
+    this.game.add.existing(this.redBar);
+    this.game.add.existing(this.greenBar);
+    this.game.add.existing(this.blueBar);
+
+    // preview
+    this.preview = new _phaser2.default.Sprite(this.game, this.world.width - 150, this.world.height - 100, 'preview');
+    this.preview.width = 100;
+    this.preview.height = 100;
+
+    this.game.add.existing(this.preview);
+    this.flush();
+  }
+
+  _createClass(ColorBarManager, [{
+    key: 'addHandlers',
+    value: function addHandlers(bar) {
+      var color = bar.data.color;
+      bar.events.onInputDown.add(this.handleInput.bind(this, bar));
+      // Keyboard handling
+      var key = this.game.input.keyboard.addKey(KEY_MAP[color]);
+      key.onDown.add(this.handleInput.bind(this, bar));
+    }
+  }, {
+    key: 'calculateColor',
+    value: function calculateColor() {
+      var divisor = this.color_levels - 1;
+      var color = _phaser2.default.Color.getColor(255 * this.redBar.data.level / divisor, 255 * this.greenBar.data.level / divisor, 255 * this.blueBar.data.level / divisor);
+      return color;
+    }
+  }, {
+    key: 'handleInput',
+    value: function handleInput(item) {
+      var bars = [this.redBar, this.greenBar, this.blueBar];
+      var nonItemBars = bars.filter(function (cur) {
+        return cur !== item;
+      });
+      var nonItemNonZeros = nonItemBars.filter(function (cur) {
+        return cur.data.level > 0;
+      });
+
+      // it can't be greater because we keep bumpig it down
+      if (this.colors_allowed === nonItemNonZeros.length) {
+        nonItemNonZeros[0].reset();
+      }
+      item.step();
+      this.flush();
+    }
+  }, {
+    key: 'flush',
+    value: function flush() {
+      this.preview.tint = this.calculateColor();
+    }
+  }]);
+
+  return ColorBarManager;
+}();
 
 /***/ }),
 /* 128 */
@@ -109528,7 +109719,10 @@ var _class = function (_Phaser$State) {
   }, {
     key: 'create',
     value: function create() {
-      this.state.start('Game');
+      var clearWorld = true;
+      var clearCache = false;
+      var level = 0;
+      this.state.start('Game', clearWorld, clearCache, level);
     }
   }]);
 
