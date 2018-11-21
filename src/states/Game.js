@@ -81,13 +81,15 @@ export default class extends Phaser.State {
     this.enemies.physicsBodyType = Phaser.Physics.ARCADE;
 
     for (let i = 0; i < 10; i++) {
-      this.enemies.add(new Enemy({
+      let enemy = new Enemy({
         game: this.game, 
         x:  this.world.width * i / 10 + 50, 
-        y: 50}))
+        y: 50,
+        scale: playerScale})
+      this.enemies.add(enemy)
+      enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
     }
 
-    this.enemies.setAll('outOfBoundsKill', true)
     this.enemies.setAll('checkWorldBounds', true)
   }
 
@@ -134,6 +136,11 @@ export default class extends Phaser.State {
     }
 
     this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
+
+    for (let i = 0; i < this.enemies.length; ++i) {
+      this.enemies.children[i].move()
+    }
+
   }
 
   hitEnemy (bullet, enemy) {
@@ -144,4 +151,9 @@ export default class extends Phaser.State {
       console.log('Hit');
     }
   }
+
+enemyOutOfBounds(enemy) {
+  enemy.turn()
+}
+
 }
