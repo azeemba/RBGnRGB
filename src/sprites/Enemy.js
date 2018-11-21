@@ -1,25 +1,44 @@
 import Phaser from 'phaser-ce'
 
+let ONE_COLOR_ARRAY = ['r', 'g', 'b']
+
 export default class extends Phaser.Sprite {
-  constructor ({ game, x, y, scale }) {
+  constructor ({ game, x, y, scale, colors_allowed, color_levels }) {
     super(game, x, y, 'enemy')
     this.anchor.setTo(0.5)
 
     this.scale.setTo(scale * 1.5, scale * 1.5)
 
-    let redRand = game.rnd.integerInRange(0, 4)
-    let greenRand = game.rnd.integerInRange(0, 4)
-    let blueRand = game.rnd.integerInRange(0, 4)
+    let maxVal = color_levels - 1
+    let redRand = 255 * game.rnd.integerInRange(0, maxVal) / maxVal
+    let greenRand = 255 * game.rnd.integerInRange(0, maxVal) / maxVal
+    let blueRand = 255 * game.rnd.integerInRange(0, maxVal) / maxVal
 
-    let color = Phaser.Color.getColor(
-      255 * redRand / 4,
-      255 * greenRand / 4,
-      255 * blueRand / 4
-    )
+    let color
+    if (colors_allowed === 1) {
+      let info = {r: 0, g: 0, b: 0}
+      let winner = game.rnd.pick(ONE_COLOR_ARRAY)
+      info[winner] = redRand // not really red
+      color = this.makeColor(info)
+    }
+    else if (colors_allowed === 2) {
+      let info = {r: redRand, g: greenRand, b: blueRand}
+      let loser = game.rnd.pick(ONE_COLOR_ARRAY)
+      info[loser] = 0
+      color = this.makeColor(info)
+    }
+    else {
+      color = Phaser.Color.getColor(redRand, greenRand, blueRand)
+    }
+
     console.log(color)
     this.tint = color;
 
     this.direction = "right"
+  }
+
+  makeColor ({r, g, b}) {
+    return Phaser.Color.getColor(r, g, b)
   }
 
   move () {

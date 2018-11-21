@@ -9,25 +9,30 @@ const LEVEL_DATA = [
     'level': 0,
     'colors_allowed': 1, // how many colors can be enabled together [1, 3]
     'color_levels': 2, // how many levels each color should have [2, 3, 5]
-    // other enemy stats
+    enemyCount: 3,
   },
   {
     'level': 1,
-    'colors_allowed': 3, // how many colors can be enabled together [1, 3]
+    'colors_allowed': 2, // how many colors can be enabled together [1, 3]
     'color_levels': 2, // how many levels each color should have [2, 3, 5]
     // other enemy stats
+    enemyCount: 5,
   },
   {
     'level': 2,
     'colors_allowed': 3, // how many colors can be enabled together [1, 3]
     'color_levels': 3, // how many levels each color should have [2, 3, 5]
     // other enemy stats
+    enemyCount: -1
   }
 ]
 
 
 export default class extends Phaser.State {
-  init () {}
+  init (level) {
+    this.level = level
+    this.levelData = LEVEL_DATA[level]
+  }
   preload () {}
 
   create () {
@@ -37,8 +42,8 @@ export default class extends Phaser.State {
       this.game,
       this.world,
       {
-        'colors_allowed': 1,
-        'color_levels': 2
+        'colors_allowed': this.levelData.colors_allowed,
+        'color_levels': this.levelData.color_levels
       }
       );
 
@@ -80,7 +85,10 @@ export default class extends Phaser.State {
         game: this.game, 
         x:  this.world.width * i / 10 + 50, 
         y: 50,
-        scale: this.playerScale})
+        scale: this.playerScale,
+        colors_allowed: this.levelData.colors_allowed,
+        color_levels: this.levelData.color_levels
+      })
       this.enemies.add(enemy)
       enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
     }
@@ -97,7 +105,7 @@ export default class extends Phaser.State {
   }
 
   calculateColor () {
-    this.colorBarManager.calculateColor()
+    return this.colorBarManager.calculateColor()
   }
 
   onWeaponFire (bullet, weapon) {
@@ -131,17 +139,21 @@ export default class extends Phaser.State {
       this.enemies.children[i].move()
     }
 
-    let newEnemyDistance = parseInt((this.world.width * 1/10), 10)
-    if (this.enemyMoveCount == newEnemyDistance) {
-      let enemy = new Enemy({
-        game: this.game, 
-        x:  50, 
-        y: 50,
-        scale: this.playerScale})
-      this.enemies.add(enemy)
-      enemy.checkWorldBounds = true
-      enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
-      this.enemyMoveCount = 0
+    if (this.levelData.enemyCount === -1) {
+      let newEnemyDistance = parseInt((this.world.width * 1/10), 10)
+      if (this.enemyMoveCount == newEnemyDistance) {
+        let enemy = new Enemy({
+          game: this.game, 
+          x:  50, 
+          y: 50,
+          scale: this.playerScale,
+          colors_allowed: this.levelData.colors_allowed,
+          color_levels: this.levelData.color_levels})
+        this.enemies.add(enemy)
+        enemy.checkWorldBounds = true
+        enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
+        this.enemyMoveCount = 0
+      }
     }
 
   }
@@ -152,6 +164,13 @@ export default class extends Phaser.State {
     if (enemy.tint === bullet.tint) {
       enemy.kill();
       console.log('Hit');
+    }
+
+    if (this.enemies.countLiving() === 0) {
+      let clearWorld = true
+      let clearCache = false
+      let level = this.level + 1
+      this.state.restart(clearWorld, clearCache, level)
     }
   }
 
@@ -213,6 +232,7 @@ class ColorBarManager {
     this.preview.height = 100
 
     this.game.add.existing(this.preview)
+    this.flush();
   }
 
   addHandlers (bar) {
