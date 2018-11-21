@@ -6,7 +6,7 @@ export default class extends Phaser.Sprite {
     this.anchor.setTo(0.5)
     this.width = 80
     this.height = 80
-    
+
     let redRand = game.rnd.integerInRange(0, 4)
     let greenRand = game.rnd.integerInRange(0, 4)
     let blueRand = game.rnd.integerInRange(0, 4)
@@ -19,5 +19,4 @@ export default class extends Phaser.Sprite {
     console.log(color)
     this.tint = color;
   }
-
 }

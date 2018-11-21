@@ -35,7 +35,7 @@ export default class extends Phaser.State {
     this.game.add.existing(this.greenBar)
     this.game.add.existing(this.blueBar)
 
-    //preview
+    // preview
     this.preview = new Phaser.Sprite(
       this.game,
       this.world.width - 150,
@@ -47,7 +47,7 @@ export default class extends Phaser.State {
 
     this.game.add.existing(this.preview)
 
-    //hero
+    // hero
     this.hero = new Hero({
       game: this.game,
       x: 350,
@@ -58,7 +58,7 @@ export default class extends Phaser.State {
     this.hero.scale.setTo(playerScale, playerScale)
     this.game.add.existing(this.hero)
 
-    //bullets
+    // bullets
     this.weapon = this.game.add.weapon(30, 'bullet')
     this.weapon.bullets.enableBody = true;
     this.weapon.bullets.physicsBodyType = Phaser.Physics.ARCADE
@@ -71,12 +71,11 @@ export default class extends Phaser.State {
     this.weapon.trackSprite(this.hero, 14, 0)
     this.weapon.onFire.add(this.onWeaponFire, this)
     this.fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
-   
 
     this.weapon.bullets.setAll('scale.x', playerScale / 5)
     this.weapon.bullets.setAll('scale.y', playerScale / 5)
 
-    //enemies
+    // enemies
     this.enemies = this.game.add.group();
     this.enemies.enableBody = true
     this.enemies.physicsBodyType = Phaser.Physics.ARCADE;
@@ -87,7 +86,6 @@ export default class extends Phaser.State {
 
     this.enemies.setAll('outOfBoundsKill', true)
     this.enemies.setAll('checkWorldBounds', true)
-  
   }
 
   render () {
@@ -131,20 +129,16 @@ export default class extends Phaser.State {
     if (this.fireButton.isDown) {
       this.weapon.fire()
     }
-  
-   this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
 
-}
+    this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
+  }
 
-hitEnemy (bullet, enemy) {
-  console.log("bullet color:", bullet.tint)
-  console.log("enemy color:", enemy.tint)
-    if (enemy.tint == bullet.tint) {
-        enemy.kill();
-        console.log("Hit");
+  hitEnemy (bullet, enemy) {
+    console.log('bullet color:', bullet.tint)
+    console.log('enemy color:', enemy.tint)
+    if (enemy.tint === bullet.tint) {
+      enemy.kill();
+      console.log('Hit');
     }
-        
-}
-
-
+  }
 }
