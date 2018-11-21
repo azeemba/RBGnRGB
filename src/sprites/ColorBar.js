@@ -6,11 +6,6 @@ let COLOR_NAME_MAP = {
   'b': 'bluebar'
 }
 
-let KEY_MAP = {
-  'r': Phaser.KeyCode.R,
-  'g': Phaser.KeyCode.G,
-  'b': Phaser.KeyCode.B
-}
 
 let LEGEND_COLOR = {
   'r': '#ed313a',
@@ -18,8 +13,14 @@ let LEGEND_COLOR = {
   'b': '#2d9ad5'
 }
 
+let MAX_LEVELS_TO_FRAME = {
+  2: [4, 3],
+  3: [4, 1, 3],
+  5: [4, 0, 1, 2, 3]
+}
+
 export default class extends Phaser.Sprite {
-  constructor ({ game, x, y, color }) {
+  constructor ({ game, x, y, color, levels}) {
     let spriteName = COLOR_NAME_MAP[color]
     let START_FRAME = 4
     super(game, x, y, spriteName, START_FRAME)
@@ -28,15 +29,12 @@ export default class extends Phaser.Sprite {
     this.height = 40
 
     this.data.level = 0
+    this.data.maxLevels = levels
     this.data.color = color // should be r/g/b
 
     // Mouse click handling
     this.inputEnabled = true
-    this.events.onInputDown.add(this.step, this)
 
-    // Keyboard handling
-    this.data.key = this.game.input.keyboard.addKey(KEY_MAP[color])
-    this.data.key.onDown.add(this.step, this)
 
     let text = this.game.add.text(0, 100, this.data.color.toUpperCase())
     text.anchor.setTo(0.5)
@@ -47,13 +45,13 @@ export default class extends Phaser.Sprite {
   }
 
   step () {
-    this.data.level = (this.data.level + 1) % 5
+    this.data.level = (this.data.level + 1) % this.data.maxLevels
 
-    if (this.data.level === 0) {
-      this.frame = 4
-    }
-    else {
-      this.frame = this.data.level - 1
-    }
+    this.frame = MAX_LEVELS_TO_FRAME[this.data.maxLevels][this.data.level]
+  }
+
+  reset () {
+    this.data.level = 0;
+    this.frame = 4
   }
 }

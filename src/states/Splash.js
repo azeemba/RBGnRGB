@@ -30,6 +30,9 @@ export default class extends Phaser.State {
   }
 
   create () {
-    this.state.start('Game')
+    let clearWorld = true
+    let clearCache = false
+    let level = 0
+    this.state.start('Game', clearWorld, clearCache, level)
   }
 }
