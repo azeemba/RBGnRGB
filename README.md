@@ -1,4 +1,4 @@
-hybrid-split
+RBGnRGB
 ===========
 
 Game created for the 2018
