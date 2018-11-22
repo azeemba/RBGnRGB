@@ -9,14 +9,14 @@ const LEVEL_DATA = [
     'level': 0,
     'colors_allowed': 1, // how many colors can be enabled together [1, 3]
     'color_levels': 2, // how many levels each color should have [2, 3, 5]
-    enemyCount: 3,
+    enemyCount: 3
   },
   {
     'level': 1,
     'colors_allowed': 2, // how many colors can be enabled together [1, 3]
     'color_levels': 2, // how many levels each color should have [2, 3, 5]
     // other enemy stats
-    enemyCount: 5,
+    enemyCount: 5
   },
   {
     'level': 2,
@@ -26,7 +26,6 @@ const LEVEL_DATA = [
     enemyCount: -1
   }
 ]
-
 
 export default class extends Phaser.State {
   init (level) {
@@ -46,7 +45,7 @@ export default class extends Phaser.State {
         'color_levels': this.levelData.color_levels
       }
       );
-    
+
     if (__DEV__) {
       this.colorBarManager.preview.inputEnabled = true
       this.colorBarManager.preview.events.onInputDown.add(
@@ -89,8 +88,8 @@ export default class extends Phaser.State {
 
     for (let i = 0; i < 10; i++) {
       let enemy = new Enemy({
-        game: this.game, 
-        x:  this.world.width * i / 10 + 50, 
+        game: this.game,
+        x: this.world.width * i / 10 + 50,
         y: 50,
         scale: this.playerScale,
         colors_allowed: this.levelData.colors_allowed,
@@ -102,14 +101,12 @@ export default class extends Phaser.State {
 
     this.enemyMoveCount = 0
     this.enemies.setAll('checkWorldBounds', true)
-
   }
 
   render () {
     if (__DEV__) {
       this.game.debug.inputInfo(32, 32)
     }
-
   }
 
   calculateColor () {
@@ -148,11 +145,11 @@ export default class extends Phaser.State {
     }
 
     if (this.levelData.enemyCount === -1) {
-      let newEnemyDistance = parseInt((this.world.width * 1/10), 10)
+      let newEnemyDistance = parseInt((this.world.width * 1 / 10), 10)
       if (this.enemyMoveCount == newEnemyDistance) {
         let enemy = new Enemy({
-          game: this.game, 
-          x:  50, 
+          game: this.game,
+          x: 50,
           y: 50,
           scale: this.playerScale,
           colors_allowed: this.levelData.colors_allowed,
@@ -163,7 +160,6 @@ export default class extends Phaser.State {
         this.enemyMoveCount = 0
       }
     }
-
   }
 
   hitEnemy (bullet, enemy) {
@@ -179,9 +175,9 @@ export default class extends Phaser.State {
     }
   }
 
-enemyOutOfBounds(enemy) {
-  enemy.turn()
-}
+  enemyOutOfBounds (enemy) {
+    enemy.turn()
+  }
 
   finishLevel () {
     let clearWorld = true
@@ -189,7 +185,6 @@ enemyOutOfBounds(enemy) {
     let level = this.level + 1
     this.state.start('LevelMessage', clearWorld, clearCache, level)
   }
-
 }
 
 let KEY_MAP = {

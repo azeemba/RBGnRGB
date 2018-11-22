@@ -34,7 +34,7 @@ export default class extends Phaser.Sprite {
     console.log(color)
     this.tint = color;
 
-    this.direction = "right"
+    this.direction = 'right'
   }
 
   makeColor ({r, g, b}) {
@@ -42,23 +42,23 @@ export default class extends Phaser.Sprite {
   }
 
   move () {
-  	if (this.direction == "right") {
-  		this.x = this.x + 1
-  	}
-  	else if (this.direction == "left") {
-  		this.x = this.x - 1
-  	}
+    if (this.direction == 'right') {
+      this.x = this.x + 1
+    }
+    else if (this.direction == 'left') {
+      this.x = this.x - 1
+    }
   }
 
   turn () {
-  	this.y = this.y + 70
-  	if (this.direction == "right") {
-  		this.direction = "left"
-  		this.x = this.x - 50
-  	}
-  	else if (this.direction == "left") {
-  		this.direction = "right"
-  		this.x = this.x + 50
-  	}
+    this.y = this.y + 70
+    if (this.direction == 'right') {
+      this.direction = 'left'
+      this.x = this.x - 50
+    }
+    else if (this.direction == 'left') {
+      this.direction = 'right'
+      this.x = this.x + 50
+    }
   }
 }

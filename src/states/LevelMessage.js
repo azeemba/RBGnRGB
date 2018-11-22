@@ -72,8 +72,8 @@ export default class extends Phaser.State {
   }
 
   continue () {
-    if (this.level === LEVEL_MESSAGE.length-1) {
-      console.log("No more levels")
+    if (this.level === LEVEL_MESSAGE.length - 1) {
+      console.log('No more levels')
       return
     }
     // looks like a phaser bug, neither of these work

@@ -6,7 +6,6 @@ let COLOR_NAME_MAP = {
   'b': 'bluebar'
 }
 
-
 let LEGEND_COLOR = {
   'r': '#ed313a',
   'g': '#6cbd45',
