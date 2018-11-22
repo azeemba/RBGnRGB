@@ -46,6 +46,13 @@ export default class extends Phaser.State {
         'color_levels': this.levelData.color_levels
       }
       );
+    
+    if (__DEV__) {
+      this.colorBarManager.preview.inputEnabled = true
+      this.colorBarManager.preview.events.onInputDown.add(
+        this.finishLevel, this
+      )
+    }
 
     // hero
     this.hero = new Hero({
@@ -95,6 +102,7 @@ export default class extends Phaser.State {
 
     this.enemyMoveCount = 0
     this.enemies.setAll('checkWorldBounds', true)
+
   }
 
   render () {
@@ -167,16 +175,20 @@ export default class extends Phaser.State {
     }
 
     if (this.enemies.countLiving() === 0) {
-      let clearWorld = true
-      let clearCache = false
-      let level = this.level + 1
-      this.state.restart(clearWorld, clearCache, level)
+      this.finishLevel()
     }
   }
 
 enemyOutOfBounds(enemy) {
   enemy.turn()
 }
+
+  finishLevel () {
+    let clearWorld = true
+    let clearCache = false
+    let level = this.level + 1
+    this.state.start('LevelMessage', clearWorld, clearCache, level)
+  }
 
 }
 
@@ -237,6 +249,7 @@ class ColorBarManager {
 
   addHandlers (bar) {
     let color = bar.data.color
+    bar.inputEnabled = true
     bar.events.onInputDown.add(this.handleInput.bind(this, bar))
     // Keyboard handling
     let key = this.game.input.keyboard.addKey(KEY_MAP[color])
