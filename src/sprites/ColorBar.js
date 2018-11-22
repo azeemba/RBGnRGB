@@ -6,7 +6,6 @@ let COLOR_NAME_MAP = {
   'b': 'bluebar'
 }
 
-
 let LEGEND_COLOR = {
   'r': '#ed313a',
   'g': '#6cbd45',
@@ -31,10 +30,6 @@ export default class extends Phaser.Sprite {
     this.data.level = 0
     this.data.maxLevels = levels
     this.data.color = color // should be r/g/b
-
-    // Mouse click handling
-    this.inputEnabled = true
-
 
     let text = this.game.add.text(0, 100, this.data.color.toUpperCase())
     text.anchor.setTo(0.5)

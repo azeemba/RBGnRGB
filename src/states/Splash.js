@@ -14,6 +14,8 @@ export default class extends Phaser.State {
     // load your assets
     //
     this.load.image('mushroom', 'assets/images/mushroom2.png')
+    this.load.image('banner', 'assets/images/banner.png')
+    this.load.image('x', 'assets/images/x.png')
     this.load.image('preview', 'assets/images/preview.png')
     this.load.image('bullet', 'assets/images/bullet.png')
     this.load.image('enemy', 'assets/images/skull.png')
@@ -33,6 +35,6 @@ export default class extends Phaser.State {
     let clearWorld = true
     let clearCache = false
     let level = 0
-    this.state.start('Game', clearWorld, clearCache, level)
+    this.state.start('LevelMessage', clearWorld, clearCache, level)
   }
 }
