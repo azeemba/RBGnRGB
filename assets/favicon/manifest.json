@@ -1,5 +1,6 @@
 {
- "name": "App",
+ "name": "RBGnRGB",
+ "display": "standalone",
  "icons": [
   {
    "src": "\/android-icon-36x36.png",
