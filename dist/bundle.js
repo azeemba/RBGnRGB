@@ -109385,6 +109385,8 @@ var _class = function (_Phaser$State) {
   }, {
     key: 'create',
     value: function create() {
+      var _this2 = this;
+
       this.game.physics.startSystem(_phaser2.default.Physics.ARCADE);
       this.cursors = this.input.keyboard.createCursorKeys();
       this.colorBarManager = new ColorBarManager(this.game, this.world, {
@@ -109396,6 +109398,9 @@ var _class = function (_Phaser$State) {
         this.colorBarManager.preview.inputEnabled = true;
         this.colorBarManager.preview.events.onInputDown.add(this.finishLevel, this);
       }
+      this.game.input.onTap.add(function () {
+        return _this2.weapon.fire();
+      });
 
       // hero
       this.hero = new _Hero2.default({
@@ -109603,6 +109608,7 @@ var ColorBarManager = function () {
     value: function addHandlers(bar) {
       var color = bar.data.color;
       bar.inputEnabled = true;
+      bar.input.useHandCursor = true;
       bar.events.onInputDown.add(this.handleInput.bind(this, bar));
       // Keyboard handling
       var key = this.game.input.keyboard.addKey(KEY_MAP[color]);
@@ -109723,6 +109729,8 @@ var _class = function (_Phaser$State) {
 
       closeButton.inputEnabled = true;
       closeButton.events.onInputDown.add(this.continue, this);
+      closeButton.input.useHandCursor = true;
+      this.game.input.onTap.add(this.continue, this);
       this.game.input.keyboard.addCallbacks(this, this.continue);
     }
   }, {
