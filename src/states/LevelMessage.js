@@ -68,6 +68,8 @@ export default class extends Phaser.State {
 
     closeButton.inputEnabled = true
     closeButton.events.onInputDown.add(this.continue, this)
+    closeButton.input.useHandCursor = true
+    this.game.input.onTap.add(this.continue, this)
     this.game.input.keyboard.addCallbacks(this, this.continue)
   }
 

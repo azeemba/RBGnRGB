@@ -52,6 +52,7 @@ export default class extends Phaser.State {
         this.finishLevel, this
       )
     }
+    this.game.input.onTap.add(() => this.weapon.fire())
 
     // hero
     this.hero = new Hero({
@@ -245,6 +246,7 @@ class ColorBarManager {
   addHandlers (bar) {
     let color = bar.data.color
     bar.inputEnabled = true
+    bar.input.useHandCursor = true
     bar.events.onInputDown.add(this.handleInput.bind(this, bar))
     // Keyboard handling
     let key = this.game.input.keyboard.addKey(KEY_MAP[color])
