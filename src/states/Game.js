@@ -66,6 +66,21 @@ export default class extends Phaser.State {
     this.hero.scale.setTo(this.playerScale, this.playerScale)
     this.game.add.existing(this.hero)
 
+    this.healthMeter = this.game.add.group()
+    let lives = 6
+    for (let i = 0; i < lives; ++i) {
+      let s = new Phaser.Sprite(this.game, this.game.width - 20, 30, 'lives')
+      s.anchor.setTo(0.5)
+      s.scale.setTo(0.75)
+      this.healthMeter.add(s)
+      if (i === 0) {
+        //s.alignIn(this.camera.view, Phaser.TOP_LEFT)
+      }
+      else {
+        s.alignTo(this.healthMeter.getAt(i-1), Phaser.LEFT_CENTER, -5)
+      }
+    }
+
     // bullets
     this.weapon = this.game.add.weapon(30, 'bullet')
     this.weapon.bullets.enableBody = true;
@@ -92,7 +107,7 @@ export default class extends Phaser.State {
       let enemy = new Enemy({
         game: this.game,
         x: this.world.width * i / 10 + 50,
-        y: 50,
+        y: 60,
         scale: this.playerScale,
         colors_allowed: this.levelData.colors_allowed,
         color_levels: this.levelData.color_levels
@@ -154,6 +169,7 @@ export default class extends Phaser.State {
 
     this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
     this.game.physics.arcade.overlap(this.enemiesWeapon.bullets, this.hero, this.hitHero, null, this)
+    this.game.physics.arcade.overlap(this.enemies, this.hero, this.hitHero, null, this)
 
     for (let i = 0; i < this.enemies.length; ++i) {
       this.enemies.children[i].move()
@@ -198,6 +214,10 @@ export default class extends Phaser.State {
 
   hitHero (hero, bullet) {
     console.log('Hero hit!')
+    let num = this.healthMeter.length
+    let removeItem = this.healthMeter.getAt(num-1)
+    this.healthMeter.removeChild(removeItem)
+    removeItem.destroy()
     bullet.kill()
     hero.hit()
   }
