@@ -109580,6 +109580,20 @@ var _class = function (_Phaser$State) {
       this.hero.scale.setTo(this.playerScale, this.playerScale);
       this.game.add.existing(this.hero);
 
+      this.healthMeter = this.game.add.group();
+      var lives = 6;
+      for (var i = 0; i < lives; ++i) {
+        var s = new _phaser2.default.Sprite(this.game, this.game.width - 20, 30, 'lives');
+        s.anchor.setTo(0.5);
+        s.scale.setTo(0.75);
+        this.healthMeter.add(s);
+        if (i === 0) {
+          //s.alignIn(this.camera.view, Phaser.TOP_LEFT)
+        } else {
+          s.alignTo(this.healthMeter.getAt(i - 1), _phaser2.default.LEFT_CENTER, -5);
+        }
+      }
+
       // bullets
       this.weapon = this.game.add.weapon(30, 'bullet');
       this.weapon.bullets.enableBody = true;
@@ -109602,11 +109616,11 @@ var _class = function (_Phaser$State) {
       this.enemies.enableBody = true;
       this.enemies.physicsBodyType = _phaser2.default.Physics.ARCADE;
 
-      for (var i = 0; i < 10; i++) {
+      for (var _i = 0; _i < 10; _i++) {
         var enemy = new _Enemy2.default({
           game: this.game,
-          x: this.world.width * i / 10 + 50,
-          y: 50,
+          x: this.world.width * _i / 10 + 50,
+          y: 60,
           scale: this.playerScale,
           colors_allowed: this.levelData.colors_allowed,
           color_levels: this.levelData.color_levels
@@ -109672,6 +109686,7 @@ var _class = function (_Phaser$State) {
 
       this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
       this.game.physics.arcade.overlap(this.enemiesWeapon.bullets, this.hero, this.hitHero, null, this);
+      this.game.physics.arcade.overlap(this.enemies, this.hero, this.hitHero, null, this);
 
       for (var i = 0; i < this.enemies.length; ++i) {
         this.enemies.children[i].move();
@@ -109717,6 +109732,10 @@ var _class = function (_Phaser$State) {
     key: 'hitHero',
     value: function hitHero(hero, bullet) {
       console.log('Hero hit!');
+      var num = this.healthMeter.length;
+      var removeItem = this.healthMeter.getAt(num - 1);
+      this.healthMeter.removeChild(removeItem);
+      removeItem.destroy();
       bullet.kill();
       hero.hit();
     }
@@ -109907,6 +109926,7 @@ var _class = function (_Phaser$State) {
       this.load.image('gui_skull', 'assets/images/gui_skull.png');
       this.load.image('gui_cup', 'assets/images/gui_cup.png');
       this.load.image('gui_victory', 'assets/images/gui_victory.png');
+      this.load.image('lives', 'assets/images/lives.png');
       var colors = ['redbar', 'bluebar', 'greenbar'];
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
