@@ -30,6 +30,8 @@ export default class extends Phaser.State {
       265, 282)
     this.load.spritesheet('walk', 'assets/images/hero/walking_anim.png',
       265, 290)
+    this.load.spritesheet('hurt', 'assets/images/hero/hurt_anim.png',
+      317, 295)
   }
 
   create () {

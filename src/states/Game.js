@@ -199,10 +199,11 @@ export default class extends Phaser.State {
       this.finishLevel()
     }
   }
+
   hitHero (hero, bullet) {
     console.log('Hero hit!')
     bullet.kill()
-    hero.damage(0.2)
+    hero.hit()
   }
 
   enemyOutOfBounds (enemy) {
