@@ -154,6 +154,7 @@ export default class extends Phaser.State {
 
     this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
     this.game.physics.arcade.overlap(this.enemiesWeapon.bullets, this.hero, this.hitHero, null, this)
+    this.game.physics.arcade.overlap(this.enemies, this.hero, this.hitHero, null, this)
 
     for (let i = 0; i < this.enemies.length; ++i) {
       this.enemies.children[i].move()
