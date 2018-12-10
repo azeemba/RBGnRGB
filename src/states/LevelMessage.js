@@ -24,10 +24,20 @@ let LEVEL_MESSAGE = [
   },
   {
     message: 'You finished the game! Thanks for playing!'
+  },
+  {
+    message: 'Oh no! You weren\'t able to finish the level! It\'s all good ' +
+             'though, the real RBG got this.\n\n' +
+             'In the meanwhile, you can try again!'
+
   }
 ]
 
 export default class extends Phaser.State {
+  static getFailedLevel () {
+    return LEVEL_MESSAGE.length - 1
+  }
+
   init (level) {
     this.level = level
   }
@@ -66,17 +76,25 @@ export default class extends Phaser.State {
     this.game.add.existing(closeButton)
     closeButton.alignIn(this.banner, Phaser.TOP_RIGHT, -20, -20)
 
-    closeButton.inputEnabled = true
-    closeButton.events.onInputDown.add(this.continue, this)
-    closeButton.input.useHandCursor = true
-    this.game.input.onTap.add(this.continue, this)
-    this.game.input.keyboard.addCallbacks(this, this.continue)
+    // Delay setting the close options in case the user is holding on to some keys from
+    // previous level
+    setTimeout(() => {
+      closeButton.inputEnabled = true
+      closeButton.events.onInputDown.add(this.continue, this)
+      closeButton.input.useHandCursor = true
+      this.game.input.onTap.add(this.continue, this)
+      this.game.input.keyboard.addCallbacks(this, this.continue)
+    }, 800)
+
   }
 
   continue () {
-    if (this.level === LEVEL_MESSAGE.length - 1) {
+    if (this.level === LEVEL_MESSAGE.length - 2) {
       console.log('No more levels')
       return
+    }
+    else if (this.level === LEVEL_MESSAGE.length - 1) {
+      this.level = 0
     }
     // looks like a phaser bug, neither of these work
     // this.game.input.keyboard.removeCallbacks()

@@ -19,6 +19,7 @@ export default class extends Phaser.State {
     this.load.image('preview', 'assets/images/preview.png')
     this.load.image('bullet', 'assets/images/bullet.png')
     this.load.image('enemy', 'assets/images/skull.png')
+    this.load.image('drop_weapon', 'assets/images/drop_weapon.png')
     let colors = ['redbar', 'bluebar', 'greenbar']
     for (let c of colors) {
       this.load.spritesheet(c, `assets/images/${c}sheet.png`,
