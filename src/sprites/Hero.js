@@ -2,6 +2,7 @@ import Phaser from 'phaser-ce'
 
 const IDLE = 'idle'
 const WALK = 'walk'
+const HURT = 'hurt'
 
 export default class extends Phaser.Sprite {
   constructor ({ game, x, y }) {
@@ -19,6 +20,9 @@ export default class extends Phaser.Sprite {
   }
 
   walkLeft (weapon) {
+    if (this.data.mode === HURT) {
+      return
+    }
     if (this.data.mode !== 'left') {
       this.changeAnimation(WALK, 20)
       this.data.mode = 'left'
@@ -29,6 +33,9 @@ export default class extends Phaser.Sprite {
   }
 
   walkRight (weapon) {
+    if (this.data.mode === HURT) {
+      return
+    }
     if (this.data.mode !== 'right') {
       this.changeAnimation(WALK, 20)
       this.data.mode = 'right'
@@ -39,16 +46,28 @@ export default class extends Phaser.Sprite {
   }
 
   idle () {
+    if (this.data.mode === HURT) {
+      return
+    }
     if (this.data.mode !== IDLE) {
       this.changeAnimation(IDLE, 15)
       this.data.mode = IDLE
     }
   }
 
-  changeAnimation (mode, fps) {
+  hit () {
+    this.damage(0.2)
+    this.changeAnimation(HURT, 24, false)
+    this.data.mode = HURT
+    setTimeout(() => {
+      this.data.mode = undefined
+      this.idle()
+    }, 500)
+  }
+
+  changeAnimation (mode, fps, loop = true) {
     this.loadTexture(mode)
     this.animations.add(mode)
-    let loop = true
     this.animations.play(mode, fps, loop)
   }
 }

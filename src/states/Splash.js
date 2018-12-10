@@ -19,6 +19,11 @@ export default class extends Phaser.State {
     this.load.image('preview', 'assets/images/preview.png')
     this.load.image('bullet', 'assets/images/bullet.png')
     this.load.image('enemy', 'assets/images/skull.png')
+    this.load.image('drop_weapon', 'assets/images/drop_weapon.png')
+    this.load.image('gui_libra', 'assets/images/gui_libra.png')
+    this.load.image('gui_skull', 'assets/images/gui_skull.png')
+    this.load.image('gui_cup', 'assets/images/gui_cup.png')
+    this.load.image('gui_victory', 'assets/images/gui_victory.png')
     let colors = ['redbar', 'bluebar', 'greenbar']
     for (let c of colors) {
       this.load.spritesheet(c, `assets/images/${c}sheet.png`,
@@ -29,6 +34,8 @@ export default class extends Phaser.State {
       265, 282)
     this.load.spritesheet('walk', 'assets/images/hero/walking_anim.png',
       265, 290)
+    this.load.spritesheet('hurt', 'assets/images/hero/hurt_anim.png',
+      317, 295)
   }
 
   create () {

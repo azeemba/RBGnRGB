@@ -1,6 +1,8 @@
 RBGnRGB
 ===========
 
+![Game image](assets/favicon/android-icon-192x192.png)
+
 Game created for the 2018
 [Github Game Off](https://blog.github.com/2018-11-01-game-off-2018-theme-announcement/)
 with the theme of "hybrid".

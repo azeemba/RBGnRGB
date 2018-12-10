@@ -3,6 +3,7 @@ import Phaser from 'phaser'
 import ColorBar from '../sprites/ColorBar'
 import Hero from '../sprites/Hero'
 import Enemy from '../sprites/Enemy'
+import LevelMessage from './LevelMessage'
 
 const LEVEL_DATA = [
   {
@@ -49,7 +50,7 @@ export default class extends Phaser.State {
     if (__DEV__) {
       this.colorBarManager.preview.inputEnabled = true
       this.colorBarManager.preview.events.onInputDown.add(
-        this.finishLevel, this
+        () => this.finishLevel()
       )
     }
     this.game.input.onTap.add(() => this.weapon.fire())
@@ -99,6 +100,18 @@ export default class extends Phaser.State {
       this.enemies.add(enemy)
       enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
     }
+    this.enemiesWeapon = this.game.add.weapon(-1, 'drop_weapon')
+    this.enemiesWeapon.autofire = true
+    this.enemiesWeapon.fireRate = 1500
+    this.enemiesWeapon.fireRateVariance = 500
+    this.enemiesWeapon.fireAngle = Phaser.ANGLE_DOWN
+    this.enemiesWeapon.trackSprite(this.enemies.getAt(0))
+    this.enemiesWeapon.onFire.add((bullet) => {
+      bullet.tint = this.enemiesWeapon.trackedSprite.tint
+      let firer = this.game.rnd.pick(this.enemies.children.filter(e => e.alive))
+      this.enemiesWeapon.trackSprite(firer)
+      this.enemiesWeapon.trackOffset.y = firer.width/2
+    })
 
     this.enemyMoveCount = 0
     this.enemies.setAll('checkWorldBounds', true)
@@ -140,6 +153,7 @@ export default class extends Phaser.State {
     }
 
     this.game.physics.arcade.overlap(this.weapon.bullets, this.enemies, this.hitEnemy, null, this);
+    this.game.physics.arcade.overlap(this.enemiesWeapon.bullets, this.hero, this.hitHero, null, this)
 
     for (let i = 0; i < this.enemies.length; ++i) {
       this.enemies.children[i].move()
@@ -159,7 +173,13 @@ export default class extends Phaser.State {
         enemy.checkWorldBounds = true
         enemy.events.onOutOfBounds.add(this.enemyOutOfBounds, this);
         this.enemyMoveCount = 0
+
       }
+    }
+
+    if (!this.hero.alive) {
+      // hero died!
+      this.finishLevel(LevelMessage.getFailedLevel())
     }
   }
 
@@ -176,14 +196,23 @@ export default class extends Phaser.State {
     }
   }
 
+  hitHero (hero, bullet) {
+    console.log('Hero hit!')
+    bullet.kill()
+    hero.hit()
+  }
+
   enemyOutOfBounds (enemy) {
     enemy.turn()
   }
 
-  finishLevel () {
+  finishLevel (level) {
+    if (!level) {
+      level = this.level + 1
+    }
+    this.enemiesWeapon.autofire = false
     let clearWorld = true
     let clearCache = false
-    let level = this.level + 1
     this.state.start('LevelMessage', clearWorld, clearCache, level)
   }
 }
