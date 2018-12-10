@@ -2,30 +2,38 @@ import Phaser from 'phaser'
 
 let LEVEL_MESSAGE = [
   {
-    title: 'Welcome to RGBnRBG',
+    icon: 'gui_libra',
+    iconSize: '100',
     message: 'You are RBG and you need to destroy all ' +
-      'the monsters by matching their RGB value.\n\n' +
+      'the monsters by matching their RGB values.\n\n' +
       "Press 'R' or 'G' or 'B' on your keyboard or " +
       'click on the color meters to control the color.\n\n' +
       'Press spacebar to shoot.\n\n' +
       'Arrow keys to move.\n'
   },
   {
-    title: '',
+    icon: 'gui_cup',
+    iconSize: '200',
     message: 'Success! You finished the level!\n\n' +
              'Now the monsters may be combinations of up to 2 colors\n\n' +
              'It\'s difficult but RBG can handle it!'
   },
   {
+    icon: 'gui_cup',
+    iconSize: '200',
     message: 'Woohoo! That was awesome!\n\n' +
              'But now the monsters may be a combination of all 3 colors ' +
              'and each color can have multiple levels!\n\n' +
              'Best of luck!'
   },
   {
+    iconSize: '300',
+    icon: 'gui_victory',
     message: 'You finished the game! Thanks for playing!'
   },
   {
+    iconSize: '300',
+    icon: 'gui_skull',
     message: 'Oh no! You weren\'t able to finish the level! It\'s all good ' +
              'though, the real RBG got this.\n\n' +
              'In the meanwhile, you can try again!'
@@ -53,17 +61,24 @@ export default class extends Phaser.State {
     this.banner.anchor.setTo(0.5)
     this.game.add.existing(this.banner)
 
-    let messageText = LEVEL_MESSAGE[this.level].message
+    let levelObject = LEVEL_MESSAGE[this.level]
+
+    let icon = this.game.add.sprite(0, 0, levelObject.icon)
+    icon.height = levelObject.iconSize
+    icon.width = levelObject.iconSize
+
+    let messageText = levelObject.message
     let text = this.game.add.text(0, 0, messageText)
     text.wordWrap = true
     text.wordWrapWidth = this.banner.width - 100
     text.fontSize = 32
     text.font = 'Fredoka One'
-    text.fill = '#77bfa3'
+    text.fill = '#8D5573' //'#654773' //'#77bfa3'
     text.smoothed = false
     this.game.add.existing(text)
 
-    text.alignIn(this.banner, Phaser.TOP_CENTER, 0, -70)
+    icon.alignIn(this.banner, Phaser.TOP_CENTER, 0, -20)
+    text.alignIn(this.banner, Phaser.TOP_CENTER, 0, -20 - levelObject.iconSize)
 
     let closeButton = new Phaser.Sprite(
       this.game,

@@ -50,7 +50,7 @@ export default class extends Phaser.State {
     if (__DEV__) {
       this.colorBarManager.preview.inputEnabled = true
       this.colorBarManager.preview.events.onInputDown.add(
-        this.finishLevel, this
+        () => this.finishLevel()
       )
     }
     this.game.input.onTap.add(() => this.weapon.fire())
@@ -179,11 +179,7 @@ export default class extends Phaser.State {
 
     if (!this.hero.alive) {
       // hero died!
-      this.enemiesWeapon.autofire = false
-      let clearWorld = true
-      let clearCache = false
-      let level = LevelMessage.getFailedLevel() 
-      this.state.start('LevelMessage', clearWorld, clearCache, level)
+      this.finishLevel(LevelMessage.getFailedLevel())
     }
   }
 
@@ -210,10 +206,13 @@ export default class extends Phaser.State {
     enemy.turn()
   }
 
-  finishLevel () {
+  finishLevel (level) {
+    if (!level) {
+      level = this.level + 1
+    }
+    this.enemiesWeapon.autofire = false
     let clearWorld = true
     let clearCache = false
-    let level = this.level + 1
     this.state.start('LevelMessage', clearWorld, clearCache, level)
   }
 }
