@@ -10,21 +10,21 @@ const LEVEL_DATA = [
     'level': 0,
     'colors_allowed': 1, // how many colors can be enabled together [1, 3]
     'color_levels': 2, // how many levels each color should have [2, 3, 5]
-    enemyCount: 3
+    enemyCount: 10 
   },
   {
     'level': 1,
     'colors_allowed': 2, // how many colors can be enabled together [1, 3]
     'color_levels': 2, // how many levels each color should have [2, 3, 5]
     // other enemy stats
-    enemyCount: 5
+    enemyCount: 10
   },
   {
     'level': 2,
     'colors_allowed': 3, // how many colors can be enabled together [1, 3]
     'color_levels': 3, // how many levels each color should have [2, 3, 5]
     // other enemy stats
-    enemyCount: -1
+    enemyCount: 15
   }
 ]
 
@@ -55,6 +55,10 @@ export default class extends Phaser.State {
     }
     this.game.input.onTap.add(() => this.weapon.fire())
 
+    this.gameOverSound = this.game.add.audio('s_game_over')
+    this.finishLevelSound = this.game.add.audio('s_finish')
+    this.enemySound = this.game.add.audio('s_enemy_die')
+
     // hero
     this.hero = new Hero({
       game: this.game,
@@ -82,13 +86,14 @@ export default class extends Phaser.State {
     }
 
     // bullets
+    this.fireSound = this.game.add.audio('s_fire', 0.1)
     this.weapon = this.game.add.weapon(30, 'bullet')
     this.weapon.bullets.enableBody = true;
     this.weapon.bullets.physicsBodyType = Phaser.Physics.ARCADE
     this.weapon.height = 5
     this.weapon.width = 5
     this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS
-    this.weapon.fireRate = 250 // milliseconds
+    this.weapon.fireRate = 500 // milliseconds
     this.weapon.bulletSpeed = 300
     this.weapon.bulletAngleOffset = 90
     this.weapon.trackSprite(this.hero, 14, 0)
@@ -143,6 +148,7 @@ export default class extends Phaser.State {
   }
 
   onWeaponFire (bullet, weapon) {
+    this.fireSound.play()
     let color = this.calculateColor()
     bullet.tint = color
   }
@@ -175,7 +181,7 @@ export default class extends Phaser.State {
       this.enemies.children[i].move()
     }
 
-    if (this.levelData.enemyCount === -1) {
+    if (this.levelData.enemyCount >= this.enemies.length) {
       let newEnemyDistance = parseInt((this.world.width * 1 / 10), 10)
       if (this.enemyMoveCount == newEnemyDistance) {
         let enemy = new Enemy({
@@ -195,7 +201,7 @@ export default class extends Phaser.State {
 
     if (!this.hero.alive) {
       // hero died!
-      this.finishLevel(LevelMessage.getFailedLevel())
+      this.finishLevel()
     }
   }
 
@@ -204,6 +210,7 @@ export default class extends Phaser.State {
     console.log('enemy color:', enemy.tint)
     if (enemy.tint === bullet.tint) {
       enemy.kill();
+      this.enemySound.play()
       console.log('Hit');
     }
 
@@ -227,8 +234,13 @@ export default class extends Phaser.State {
   }
 
   finishLevel (level) {
-    if (!level) {
-      level = this.level + 1
+    level = this.level + 1
+    if (!this.hero.alive) {
+      level = LevelMessage.getFailedLevel()
+      this.gameOverSound.play()
+    }
+    else {
+      this.finishLevelSound.play()
     }
     this.enemiesWeapon.autofire = false
     let clearWorld = true

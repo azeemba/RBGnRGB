@@ -17,6 +17,8 @@ export default class extends Phaser.Sprite {
 
     game.physics.arcade.enable(this)
     this.body.collideWorldBounds = true;
+
+    this.damageSound = this.game.add.audio('s_damage')
   }
 
   walkLeft (weapon) {
@@ -59,6 +61,9 @@ export default class extends Phaser.Sprite {
     this.damage(0.2)
     this.changeAnimation(HURT, 24, false)
     this.data.mode = HURT
+    if (this.health > 0) {
+      this.damageSound.play()
+    }
     setTimeout(() => {
       this.data.mode = undefined
       this.idle()
