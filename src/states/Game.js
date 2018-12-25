@@ -227,7 +227,7 @@ export default class extends Phaser.State {
     console.log('enemy color:', enemy.tint)
     if (enemy.tint === bullet.tint) {
       enemy.kill();
-      this.enemySound.play()
+      // this.enemySound.play()
       console.log('Hit');
     }
 
