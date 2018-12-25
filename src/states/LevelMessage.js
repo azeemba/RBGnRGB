@@ -11,9 +11,9 @@ let LEVEL_MESSAGE = [
       'Press spacebar to shoot.\n\n' +
       'Arrow keys to move.\n',
     mobileMessage: 'You are RBG and you need to destroy all ' +
-      'the monsters by matching their RGB values.\n\n' +
+      'the monsters by matching their RGB (color) values.\n\n' +
       'Tap on the color meters to control the color.\n\n' +
-      'Tap on the left or right of RBG to move.\n'
+      'Tap and hold on the left or right of the game to move.\n'
   },
   {
     icon: 'gui_cup',

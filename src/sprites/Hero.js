@@ -4,6 +4,13 @@ const IDLE = 'idle'
 const WALK = 'walk'
 const HURT = 'hurt'
 
+function makeHiddenHalfScreenRect (graphic, game) {
+  graphic.beginFill(0, 0.1)
+  graphic.drawRect(0, 0, game.width / 2, game.height)
+  graphic.endFill()
+  graphic.visible = false
+}
+
 export default class extends Phaser.Sprite {
   constructor ({ game, x, y }) {
     super(game, x, y, IDLE)
@@ -19,6 +26,19 @@ export default class extends Phaser.Sprite {
     this.body.collideWorldBounds = true;
 
     this.damageSound = this.game.add.audio('s_damage')
+
+    this.leftActiveGraphic = this.game.add.graphics(0, 0)
+    makeHiddenHalfScreenRect(this.leftActiveGraphic, this.game)
+
+    this.rightActiveGraphic = this.game.add.graphics(this.game.width / 2, 0)
+    makeHiddenHalfScreenRect(this.rightActiveGraphic, this.game)
+  }
+
+  showUIFeedbackMobile ({left, right}) {
+    if (!this.game.device.desktop) {
+      this.leftActiveGraphic.visible = left
+      this.rightActiveGraphic.visible = right
+    }
   }
 
   walkLeft (weapon) {
@@ -31,6 +51,7 @@ export default class extends Phaser.Sprite {
 
       this.scale.x = Math.abs(this.scale.x) * -1
       weapon.trackSprite(this, -28, 0)
+      this.showUIFeedbackMobile({left: true, right: false})
     }
   }
 
@@ -44,6 +65,8 @@ export default class extends Phaser.Sprite {
 
       weapon.trackSprite(this, 28, 0)
       this.scale.x = Math.abs(this.scale.x)
+
+      this.showUIFeedbackMobile({left: false, right: true})
     }
   }
 
@@ -54,6 +77,8 @@ export default class extends Phaser.Sprite {
     if (this.data.mode !== IDLE) {
       this.changeAnimation(IDLE, 15)
       this.data.mode = IDLE
+
+      this.showUIFeedbackMobile({left: false, right: false})
     }
   }
 
