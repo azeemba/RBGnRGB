@@ -9,7 +9,11 @@ let LEVEL_MESSAGE = [
       "Press 'R' or 'G' or 'B' on your keyboard or " +
       'click on the color meters to control the color.\n\n' +
       'Press spacebar to shoot.\n\n' +
-      'Arrow keys to move.\n'
+      'Arrow keys to move.\n',
+    mobileMessage: 'You are RBG and you need to destroy all ' +
+      'the monsters by matching their RGB values.\n\n' +
+      'Tap on the color meters to control the color.\n\n' +
+      'Tap on the left or right of RBG to move.\n'
   },
   {
     icon: 'gui_cup',
@@ -68,6 +72,9 @@ export default class extends Phaser.State {
     icon.width = levelObject.iconSize
 
     let messageText = levelObject.message
+    if (!this.game.device.desktop && levelObject.mobileMessage) {
+      messageText = levelObject.mobileMessage
+    }
     let text = this.game.add.text(0, 0, messageText)
     text.wordWrap = true
     text.wordWrapWidth = this.banner.width - 100
