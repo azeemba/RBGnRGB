@@ -53,7 +53,6 @@ export default class extends Phaser.State {
         () => this.finishLevel()
       )
     }
-    this.game.input.onTap.add(() => this.weapon.fire())
 
     this.gameOverSound = this.game.add.audio('s_game_over')
     this.finishLevelSound = this.game.add.audio('s_finish')
@@ -99,6 +98,13 @@ export default class extends Phaser.State {
     this.weapon.trackSprite(this.hero, 14, 0)
     this.weapon.onFire.add(this.onWeaponFire, this)
     this.fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
+    if (this.game.device.desktop) {
+      this.game.input.onTap.add(() => this.weapon.fire())
+    }
+    else {
+      this.weapon.autofire = true
+      this.weapon.fireRate = 750
+    }
 
     this.weapon.bullets.setAll('scale.x', this.playerScale / 6)
     this.weapon.bullets.setAll('scale.y', this.playerScale / 6)
@@ -157,11 +163,22 @@ export default class extends Phaser.State {
     this.hero.body.velocity.x = 0
     this.enemyMoveCount++
 
-    if (this.cursors.left.isDown) {
+    let isDesktop = this.game.device.desktop
+
+    let leftMobileTap = false
+    let rightMobileTap = false
+    let onlyActive = true
+    let touch = this.input.getPointer(onlyActive)
+    if (!isDesktop && touch) {
+      leftMobileTap = touch.x < this.game.width / 2
+      rightMobileTap = touch.x > this.game.width / 2
+    }
+
+    if (this.cursors.left.isDown || leftMobileTap) {
       this.hero.body.velocity.x = -200
       this.hero.walkLeft(this.weapon)
     }
-    else if (this.cursors.right.isDown) {
+    else if (this.cursors.right.isDown || rightMobileTap) {
       this.hero.body.velocity.x = 200
       this.hero.walkRight(this.weapon)
     }
@@ -210,7 +227,7 @@ export default class extends Phaser.State {
     console.log('enemy color:', enemy.tint)
     if (enemy.tint === bullet.tint) {
       enemy.kill();
-      this.enemySound.play()
+      // this.enemySound.play()
       console.log('Hit');
     }
 
@@ -243,6 +260,7 @@ export default class extends Phaser.State {
       this.finishLevelSound.play()
     }
     this.enemiesWeapon.autofire = false
+    this.weapon.autofire = false
     let clearWorld = true
     let clearCache = false
     this.state.start('LevelMessage', clearWorld, clearCache, level)

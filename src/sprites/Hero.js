@@ -62,7 +62,7 @@ export default class extends Phaser.Sprite {
     this.changeAnimation(HURT, 24, false)
     this.data.mode = HURT
     if (this.health > 0) {
-      this.damageSound.play()
+      // this.damageSound.play()
     }
     setTimeout(() => {
       this.data.mode = undefined
