@@ -108124,7 +108124,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var LEVEL_MESSAGE = [{
   icon: 'gui_libra',
   iconSize: '100',
-  message: 'You are RBG and you need to destroy all ' + 'the monsters by matching their RGB values.\n\n' + "Press 'R' or 'G' or 'B' on your keyboard or " + 'click on the color meters to control the color.\n\n' + 'Press spacebar to shoot.\n\n' + 'Arrow keys to move.\n'
+  message: 'You are RBG and you need to destroy all ' + 'the monsters by matching their RGB values.\n\n' + "Press 'R' or 'G' or 'B' on your keyboard or " + 'click on the color meters to control the color.\n\n' + 'Press spacebar to shoot.\n\n' + 'Arrow keys to move.\n',
+  mobileMessage: 'You are RBG and you need to destroy all ' + 'the monsters by matching their RGB values.\n\n' + 'Tap on the color meters to control the color.\n\n' + 'Tap on the left or right of RBG to move.\n'
 }, {
   icon: 'gui_cup',
   iconSize: '200',
@@ -108176,6 +108177,9 @@ var _class = function (_Phaser$State) {
       icon.width = levelObject.iconSize;
 
       var messageText = levelObject.message;
+      if (!this.game.device.desktop && levelObject.mobileMessage) {
+        messageText = levelObject.mobileMessage;
+      }
       var text = this.game.add.text(0, 0, messageText);
       text.wordWrap = true;
       text.wordWrapWidth = this.banner.width - 100;
@@ -109367,7 +109371,7 @@ var _class = function (_Phaser$Sprite) {
       this.changeAnimation(HURT, 24, false);
       this.data.mode = HURT;
       if (this.health > 0) {
-        // this.damageSound.play()
+        this.damageSound.play();
       }
       setTimeout(function () {
         _this2.data.mode = undefined;
@@ -109749,7 +109753,7 @@ var _class = function (_Phaser$State) {
       console.log('enemy color:', enemy.tint);
       if (enemy.tint === bullet.tint) {
         enemy.kill();
-        // this.enemySound.play()
+        this.enemySound.play();
         console.log('Hit');
       }
 
@@ -109991,8 +109995,8 @@ var _class = function (_Phaser$State) {
       this.load.spritesheet('walk', 'assets/images/hero/walking_anim.png', 265, 290);
       this.load.spritesheet('hurt', 'assets/images/hero/hurt_anim.png', 317, 295);
 
-      this.load.audio('s_damage', 'assets/sounds/blade_01.ogg');
-      this.load.audio('s_enemy_die', 'assets/sounds/dwip.wav');
+      this.load.audio('s_damage', 'assets/sounds/damage.wav');
+      this.load.audio('s_enemy_die', 'assets/sounds/enemy_die.ogg');
       this.load.audio('s_fire', 'assets/sounds/fire.wav');
       this.load.audio('s_finish', 'assets/sounds/finish_level.wav');
       this.load.audio('s_game_over', 'assets/sounds/game_over.wav');
