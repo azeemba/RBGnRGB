@@ -17,7 +17,6 @@ module.exports = {
       'babel-polyfill',
       path.resolve(__dirname, 'src/main.ts')
     ],
-    vendor: ['pixi', 'p2', 'phaser', 'webfontloader']
 
   },
   output: {
@@ -28,7 +27,6 @@ module.exports = {
   plugins: [
     definePlugin,
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor'/* chunkName= */, filename: 'vendor.bundle.js'/* filename= */})
   ],
   module: {
     rules: [

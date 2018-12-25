@@ -38,8 +38,8 @@ export default class extends Phaser.State {
     this.load.spritesheet('hurt', 'assets/images/hero/hurt_anim.png',
       317, 295)
 
-    this.load.audio('s_damage', 'assets/sounds/blade_01.ogg')
-    this.load.audio('s_enemy_die', 'assets/sounds/dwip.wav')
+    // this.load.audio('s_damage', 'assets/sounds/blade_01.ogg')
+    // this.load.audio('s_enemy_die', 'assets/sounds/dwip.wav')
     this.load.audio('s_fire', 'assets/sounds/fire.wav')
     this.load.audio('s_finish', 'assets/sounds/finish_level.wav')
     this.load.audio('s_game_over', 'assets/sounds/game_over.wav')
