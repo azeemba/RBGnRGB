@@ -109371,7 +109371,7 @@ var _class = function (_Phaser$Sprite) {
       this.changeAnimation(HURT, 24, false);
       this.data.mode = HURT;
       if (this.health > 0) {
-        this.damageSound.play();
+        // this.damageSound.play()
       }
       setTimeout(function () {
         _this2.data.mode = undefined;
@@ -109753,7 +109753,7 @@ var _class = function (_Phaser$State) {
       console.log('enemy color:', enemy.tint);
       if (enemy.tint === bullet.tint) {
         enemy.kill();
-        this.enemySound.play();
+        // this.enemySound.play()
         console.log('Hit');
       }
 
@@ -109995,8 +109995,8 @@ var _class = function (_Phaser$State) {
       this.load.spritesheet('walk', 'assets/images/hero/walking_anim.png', 265, 290);
       this.load.spritesheet('hurt', 'assets/images/hero/hurt_anim.png', 317, 295);
 
-      this.load.audio('s_damage', 'assets/sounds/damage.wav');
-      this.load.audio('s_enemy_die', 'assets/sounds/enemy_die.ogg');
+      this.load.audio('s_damage', 'assets/sounds/blade_01.ogg');
+      this.load.audio('s_enemy_die', 'assets/sounds/dwip.wav');
       this.load.audio('s_fire', 'assets/sounds/fire.wav');
       this.load.audio('s_finish', 'assets/sounds/finish_level.wav');
       this.load.audio('s_game_over', 'assets/sounds/game_over.wav');
