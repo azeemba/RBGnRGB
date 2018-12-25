@@ -109367,7 +109367,7 @@ var _class = function (_Phaser$Sprite) {
       this.changeAnimation(HURT, 24, false);
       this.data.mode = HURT;
       if (this.health > 0) {
-        this.damageSound.play();
+        // this.damageSound.play()
       }
       setTimeout(function () {
         _this2.data.mode = undefined;
@@ -109441,6 +109441,7 @@ var _class = function (_Phaser$State) {
       this.game.scale.scaleMode = _phaser2.default.ScaleManager.SHOW_ALL;
       this.game.scale.pageAlignHorizontally = true;
       this.game.scale.pageAlignVertically = true;
+
       _webfontloader2.default.load({
         google: {
           families: ['Bangers', 'Fredoka One']
@@ -109570,9 +109571,6 @@ var _class = function (_Phaser$State) {
           return _this2.finishLevel();
         });
       }
-      this.game.input.onTap.add(function () {
-        return _this2.weapon.fire();
-      });
 
       this.gameOverSound = this.game.add.audio('s_game_over');
       this.finishLevelSound = this.game.add.audio('s_finish');
@@ -109617,6 +109615,14 @@ var _class = function (_Phaser$State) {
       this.weapon.trackSprite(this.hero, 14, 0);
       this.weapon.onFire.add(this.onWeaponFire, this);
       this.fireButton = this.input.keyboard.addKey(_phaser2.default.KeyCode.SPACEBAR);
+      if (this.game.device.desktop) {
+        this.game.input.onTap.add(function () {
+          return _this2.weapon.fire();
+        });
+      } else {
+        this.weapon.autofire = true;
+        this.weapon.fireRate = 750;
+      }
 
       this.weapon.bullets.setAll('scale.x', this.playerScale / 6);
       this.weapon.bullets.setAll('scale.y', this.playerScale / 6);
@@ -109681,10 +109687,21 @@ var _class = function (_Phaser$State) {
       this.hero.body.velocity.x = 0;
       this.enemyMoveCount++;
 
-      if (this.cursors.left.isDown) {
+      var isDesktop = this.game.device.desktop;
+
+      var leftMobileTap = false;
+      var rightMobileTap = false;
+      var onlyActive = true;
+      var touch = this.input.getPointer(onlyActive);
+      if (!isDesktop && touch) {
+        leftMobileTap = touch.x < this.game.width / 2;
+        rightMobileTap = touch.x > this.game.width / 2;
+      }
+
+      if (this.cursors.left.isDown || leftMobileTap) {
         this.hero.body.velocity.x = -200;
         this.hero.walkLeft(this.weapon);
-      } else if (this.cursors.right.isDown) {
+      } else if (this.cursors.right.isDown || rightMobileTap) {
         this.hero.body.velocity.x = 200;
         this.hero.walkRight(this.weapon);
       } else {
@@ -109732,7 +109749,7 @@ var _class = function (_Phaser$State) {
       console.log('enemy color:', enemy.tint);
       if (enemy.tint === bullet.tint) {
         enemy.kill();
-        this.enemySound.play();
+        // this.enemySound.play()
         console.log('Hit');
       }
 
@@ -109767,6 +109784,7 @@ var _class = function (_Phaser$State) {
         this.finishLevelSound.play();
       }
       this.enemiesWeapon.autofire = false;
+      this.weapon.autofire = false;
       var clearWorld = true;
       var clearCache = false;
       this.state.start('LevelMessage', clearWorld, clearCache, level);
