@@ -324,8 +324,17 @@ class ColorBarManager {
 
   addHandlers (bar) {
     let color = bar.data.color
+    // larger hit area on mobile
+    if (!this.game.device.desktop) {
+      let hitAreaPadding = 20;
+      let hitAreaWidth = (bar.width + hitAreaPadding * 2) / bar.scale.x
+      let hitAreaHeight = (bar.height + hitAreaPadding * 2) / bar.scale.y
+
+      bar.hitArea = new Phaser.Rectangle(-hitAreaWidth / 2, -hitAreaHeight / 2, hitAreaWidth, hitAreaHeight);
+    }
     bar.inputEnabled = true
     bar.input.useHandCursor = true
+
     bar.events.onInputDown.add(this.handleInput.bind(this, bar))
     // Keyboard handling
     let key = this.game.input.keyboard.addKey(KEY_MAP[color])
