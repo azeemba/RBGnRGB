@@ -1,13 +1,14 @@
 {
-  "name": "hybrid-split",
+  "name": "RBGnRGB",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "main": "index.js",
   "scripts": {
     "dev": "webpack",
-    "deploy": "webpack --config webpack.production.config.js",
-    "test": "eslint ./src/**/**.js"
+    "deploy": "webpack --config webpack.production.config.js && uglifyjs --compress --mangle -o dist/bundle.js --  dist/bundle.js",
+    "test": "eslint ./src/**/**.js",
+    "fix": "eslint --fix ./src/**/**.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -27,6 +28,7 @@
     "has-flag": "^2.0.0",
     "ts-loader": "^2.2.2",
     "typescript": "^2.4.1",
+    "uglify-es": "^3.3.9",
     "webpack": "^2.6.1"
   },
   "dependencies": {

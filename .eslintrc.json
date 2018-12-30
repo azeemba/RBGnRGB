@@ -10,7 +10,8 @@
   },
   "rules": {
     "import/no-unresolved": [2],
-    "brace-style": [2, "stroustrup"]
+    "brace-style": [2, "stroustrup"],
+    "semi": 0
   },
   "globals": {
     "phaser": true
